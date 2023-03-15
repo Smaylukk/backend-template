@@ -1,0 +1,10 @@
+node_modules/
+test/
+.idea/
+*.lock
+.eslintignore
+.gitignore
+.prettierignore
+README.md
+*.json
+dist/
