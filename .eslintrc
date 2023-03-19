@@ -1,4 +1,3 @@
-
 {
   "extends": [
     "airbnb-base",
@@ -6,17 +5,33 @@
     "plugin:import/typescript"
   ],
   "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint"],
+  "plugins": ["@typescript-eslint", "import"],
   "parserOptions": {
     "ecmaVersion": 2021,
     "sourceType": "module"
   },
-  "overrides": [
-    {
-      "files": ["*.*.ts"],
-      "rules": {
-        "new-cap": "off"
+  "rules": {
+    "import/extensions": [
+      "error",
+      "ignorePackages",
+      {
+        "js": "never",
+        "jsx": "never",
+        "ts": "never",
+        "tsx": "never"
       }
-    }
-  ]
+    ],
+    "new-cap": "off",
+    "semi": "off",
+    "consistent-return": "off",
+    "class-methods-use-this": "off",
+    "no-console": "off",
+    "no-await-in-loop": "off",
+    "no-restricted-syntax": "off",
+    "no-plusplus": "off",
+    "import/prefer-default-export": "off",
+    "max-len": ["error", { "code": 120 }],
+    "object-curly-newline": "off",
+    "max-classes-per-file": "off"
+  }
 }
