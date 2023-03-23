@@ -2,7 +2,7 @@ import { PostModel, UserModel } from '../models/model'
 import { IPostDTO, PostDTO } from '../models/dto/PostDTO'
 
 class PostService {
-  async getAllPosts(limit: number, offset: number) {
+  async getAllPosts(limit = 25, offset = 0) {
     return PostModel.findAndCountAll({
       include: {
         model: UserModel,
@@ -39,7 +39,7 @@ class PostService {
     return PostModel.create(postData, {})
   }
 
-  async updatePost(id: number, data: IPostDTO) {
+  async updatePost(id: number, data) {
     const post = await PostModel.findByPk(id)
     if (post) {
       await post.update(data)
@@ -48,7 +48,11 @@ class PostService {
   }
 
   async deletePost(id: number) {
-    await PostModel.destroy({ where: { id } })
+    return PostModel.destroy({ where: { id } })
+  }
+
+  async deletePostByBody(body: string) {
+    return PostModel.destroy({ where: { body } })
   }
 }
 

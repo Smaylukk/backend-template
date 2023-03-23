@@ -8,10 +8,7 @@ const router = Router()
 router.post(
   '/reg',
   [
-    body('email')
-      .notEmpty()
-      .withMessage('Email обовязковий')
-      .isEmail()
+    body('email').notEmpty().withMessage('Email обовязковий').isEmail()
       .withMessage('Email має бути email-формат'),
     body('name').notEmpty().withMessage('Найменування обовязкове'),
     body('password')
@@ -24,18 +21,10 @@ router.post(
 )
 router.post(
   '/login',
-  [
-    body('email')
-      .notEmpty()
-      .withMessage('Email is required')
-      .isEmail()
-      .withMessage('Email must be in email-format'),
-  ],
+  [body('email').notEmpty().withMessage('Email is required').isEmail()
+    .withMessage('Email must be in email-format')],
   userController.login,
 )
 router.get('/auth', authMiddleware, userController.check)
-
-router.get('/', userController.getAll)
-router.get('/:id', userController.getOne)
 
 export default router

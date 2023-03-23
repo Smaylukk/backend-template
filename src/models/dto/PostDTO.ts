@@ -5,8 +5,6 @@ export interface IPostDTO {
 }
 
 export class PostDTO implements IPostDTO {
-  id = null
-
   body = ''
 
   userId = 0

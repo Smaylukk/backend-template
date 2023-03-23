@@ -12,14 +12,7 @@ router.post(
   ],
   postController.create,
 )
-router.put(
-  '/:id',
-  [
-    body('body').notEmpty().withMessage('Body is required'),
-    body('userId').notEmpty().withMessage('userId is required'),
-  ],
-  postController.update,
-)
+router.put('/:id', postController.update)
 router.get('/', postController.getAll)
 router.get('/:id', postController.getOne)
 router.delete('/:id', postController.delete)

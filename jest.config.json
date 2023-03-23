@@ -1,0 +1,14 @@
+{
+  "clearMocks": true,
+  "collectCoverage": true,
+  "coverageDirectory": "coverage",
+  "coveragePathIgnorePatterns": ["/node_modules/"],
+  "coverageProvider": "v8",
+  "preset": "ts-jest",
+  "testEnvironment": "node",
+  "transform": {
+    "^.+\\.ts?$": "ts-jest"
+  },
+  "transformIgnorePatterns": ["<rootDir>/node_modules/"],
+  "testPathIgnorePatterns": [".js"]
+}

@@ -7,7 +7,7 @@ class UserService {
     return UserModel.findAll()
   }
 
-  async getOneUser(id: number | null) {
+  async getOneUser(id: number) {
     return UserModel.findByPk(id)
   }
 
@@ -18,16 +18,14 @@ class UserService {
   async createUser(data: IUserDTO) {
     const candidate = await UserModel.findOne({ where: { email: data.email } })
     if (candidate) {
-      throw new Error(
-        `User with email ${data.email} created ${candidate.email}`,
-      )
+      throw new Error(`User with email ${data.email} created ${candidate.email}`)
     }
     const userData = new UserDTO(data)
     userData.password = bcrypt.hashSync(data.password, 5)
     return UserModel.create(userData, {})
   }
 
-  async updateUser(id: number | null, data: IUserDTO) {
+  async updateUser(id: number, data: IUserDTO) {
     const user = await UserModel.findByPk(id)
     if (user) {
       await user.update(data)
@@ -36,7 +34,11 @@ class UserService {
   }
 
   async deleteUser(id: number) {
-    await UserModel.destroy({ where: { id } })
+    return UserModel.destroy({ where: { id } })
+  }
+
+  async deleteUserByEmail(email: string) {
+    return UserModel.destroy({ where: { email } })
   }
 }
 

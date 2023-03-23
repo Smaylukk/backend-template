@@ -10,8 +10,6 @@ interface IUserController {
   registration(req: Request, res: Response, next: NextFunction): Promise<Response>
   login(req: Request, res: Response, next: NextFunction): Promise<Response>
   check(req: Request, res: Response, next: NextFunction): Promise<Response>
-  getAll(req: Request, res: Response, next: NextFunction): Promise<Response>
-  getOne(req: Request, res: Response, next: NextFunction): Promise<Response>
 }
 
 class UserController implements IUserController {
@@ -80,36 +78,6 @@ class UserController implements IUserController {
       const token = jwtService.generateToken(payload)
 
       return res.status(200).json(token)
-    } catch (error) {
-      next(ApiError.badRequestError(error.message))
-    }
-  }
-
-  async getAll(req: Request, res: Response, next: NextFunction) {
-    try {
-      checkValidationError(req)
-
-      const users = await UserService.getAllUsers()
-      return res.status(200).json(users)
-    } catch (error) {
-      next(ApiError.badRequestError(error.message))
-    }
-  }
-
-  async getOne(req: Request, res: Response, next: NextFunction) {
-    try {
-      checkValidationError(req)
-
-      const { id } = req.params
-      let numId = 0
-      try {
-        numId = parseInt(id, 10)
-      } catch (e) {
-        next(ApiError.badRequestError('Param id must be number'))
-      }
-      const user = await UserService.getOneUser(numId)
-
-      return res.status(200).json(user)
     } catch (error) {
       next(ApiError.badRequestError(error.message))
     }
