@@ -1,27 +1,32 @@
 import jwt from 'jsonwebtoken'
-import * as uuid from 'uuid'
 
-interface IJWTService {
-  generateToken(payload: string): string
-  generateRefreshToken(): string
-  verifyToken(token: string): string | jwt.JwtPayload
-}
-class JWTService implements IJWTService {
-  generateRefreshToken(): string {
-    return uuid.v4()
-  }
-
-  generateToken(payload) {
-    const secret = process.env.JWT_SECRET || 'Secret'
+class JWTService {
+  generateAccessToken(payload) {
+    const secret = process.env.JWT_ACCESS_SECRET
 
     return jwt.sign(payload, secret, {
-      expiresIn: '24h',
+      expiresIn: '15s',
     })
   }
 
-  verifyToken(token) {
-    const secret = process.env.JWT_SECRET || 'Secret'
+  generateRefreshToken(payload) {
+    const secret = process.env.JWT_REFRESH_SECRET
+
+    return jwt.sign(payload, secret, {})
+  }
+
+  verifyToken(token: string) {
+    const secret = process.env.JWT_ACCESS_SECRET
     return jwt.verify(token, secret)
+  }
+
+  verifyRefreshToken(token: string) {
+    const secret = process.env.JWT_REFRESH_SECRET
+    return jwt.verify(token, secret)
+  }
+
+  createTokensPair(payload) {
+    return { accessToken: this.generateAccessToken(payload), refreshToken: this.generateRefreshToken(payload) }
   }
 }
 

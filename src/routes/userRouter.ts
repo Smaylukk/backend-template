@@ -8,8 +8,7 @@ const router = Router()
 router.post(
   '/reg',
   [
-    body('email').notEmpty().withMessage('Email обовязковий').isEmail()
-      .withMessage('Email має бути email-формат'),
+    body('email').notEmpty().withMessage('Email обовязковий').isEmail().withMessage('Email має бути email-формат'),
     body('name').notEmpty().withMessage('Найменування обовязкове'),
     body('password')
       .notEmpty()
@@ -21,10 +20,11 @@ router.post(
 )
 router.post(
   '/login',
-  [body('email').notEmpty().withMessage('Email is required').isEmail()
-    .withMessage('Email must be in email-format')],
+  // eslint-disable-next-line newline-per-chained-call
+  [body('email').notEmpty().withMessage('Email is required').isEmail().withMessage('Email must be in email-format')],
   userController.login,
 )
 router.get('/auth', authMiddleware, userController.check)
+router.post('/refresh', userController.refresh)
 
 export default router

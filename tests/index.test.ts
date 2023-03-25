@@ -7,7 +7,7 @@ process.env.NODE_ENV = 'test'
 
 const api = supertest(server)
 const postData = new PostDTO({
-  body: 'test post',
+  body: 'tests post',
   userId: 1,
 })
 let token
@@ -20,38 +20,44 @@ describe('Test Auth API', () => {
     await api.post('/api/user/login').send({ email: 'error', password: 'error' }).expect(400)
   })
   test('Login', async () => {
-    await api
-      .post('/api/user/login')
-      .send({ email: 'admin@mail.com', password: 'admin' })
-      .expect(200)
-      .expect('Content-Type', /application\/json/)
+    const res = await api.post('/api/user/login').send({ email: 'admin@mail.com', password: 'admin' }).expect(200)
+    expect(res.body).toHaveProperty('accessToken')
+    expect(res.body).toHaveProperty('refreshToken')
   })
   test('Registration', async () => {
-    await api
+    const res = await api
       .post('/api/user/reg')
-      .send({ email: 'test@test.com', name: 'test', password: 'test' })
+      .send({ email: 'tests@tests.com', name: 'test', password: 'test' })
       .expect(200)
-      .expect('Content-Type', /application\/json/)
+    expect(res.body).toHaveProperty('accessToken')
+    expect(res.body).toHaveProperty('refreshToken')
 
-    await UserService.deleteUserByEmail('test@test.com')
+    await UserService.deleteUserByEmail('tests@tests.com')
   })
-  test('Refresh', async () => {
-    const tkn = await api
+  test('Check', async () => {
+    const tokens = await api
       .post('/api/user/login')
       .send({ email: 'admin@mail.com', password: 'admin' })
       .then((res) => res.body)
-    await api
-      .get('/api/user/auth')
-      .auth(tkn, { type: 'bearer' })
-      .expect(200)
-      .expect('Content-Type', /application\/json/)
+
+    const res = await api.get('/api/user/auth').auth(tokens.accessToken, { type: 'bearer' }).expect(200)
+    expect(res.body).toHaveProperty('token')
+  })
+  test('Refresh', async () => {
+    const tokens = await api
+      .post('/api/user/login')
+      .send({ email: 'admin@mail.com', password: 'admin' })
+      .then((res) => res.body)
+
+    const res = await api.post('/api/user/refresh').send({ refreshToken: tokens.refreshToken }).expect(200)
+    expect(res.body).toHaveProperty('token')
   })
 })
 
 describe('Test Post API', () => {
   beforeAll(async () => {
     const response = await api.post('/api/user/login').send({ email: 'admin@mail.com', password: 'admin' })
-    token = response.body
+    token = response.body.accessToken
   })
   let postId
 

@@ -3,7 +3,7 @@ import sequelize from '../../src/db'
 import { UserDTO } from '../../src/models/dto/UserDTO'
 
 let userData = new UserDTO({
-  email: 'user@test.org',
+  email: 'user@tests.org',
   name: 'test user',
   password: 'test',
 })

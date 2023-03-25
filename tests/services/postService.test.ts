@@ -3,7 +3,7 @@ import PostService from '../../src/services/postService'
 import { PostDTO } from '../../src/models/dto/PostDTO'
 
 let postData = new PostDTO({
-  body: 'test post',
+  body: 'tests post',
   userId: 1,
 })
 

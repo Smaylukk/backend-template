@@ -1,4 +1,5 @@
 import express, { Express } from 'express'
+import IORedis from 'ioredis'
 import * as dotenv from 'dotenv'
 import cors from 'cors'
 import * as http from 'http'
@@ -13,6 +14,7 @@ dotenv.config({ path: envFile })
 
 const port = process.env.PORT || 5005
 
+const redisClient = new IORedis()
 const app: Express = express()
 // prettier-ignore
 app
