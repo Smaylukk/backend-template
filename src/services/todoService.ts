@@ -12,6 +12,7 @@ class TodoService {
       },
       limit,
       offset,
+      order: [['createdAt', 'desc']],
       attributes: {
         exclude: ['createdAt', 'updatedAt'],
       },
