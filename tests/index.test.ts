@@ -1,13 +1,13 @@
 import supertest from 'supertest'
 import { server } from '../src'
-import { PostDTO } from '../src/models/dto/PostDTO'
+import { TodoDTO } from '../src/models/dto/TodoDTO'
 import UserService from '../src/services/userService'
 
 process.env.NODE_ENV = 'test'
 
 const api = supertest(server)
-const postData = new PostDTO({
-  body: 'tests post',
+const todoData = new TodoDTO({
+  title: 'tests todo',
   userId: 1,
 })
 let token
@@ -41,7 +41,7 @@ describe('Test Auth API', () => {
       .then((res) => res.body)
 
     const res = await api.get('/api/user/auth').auth(tokens.accessToken, { type: 'bearer' }).expect(200)
-    expect(res.body).toHaveProperty('token')
+    expect(res.body).toHaveProperty('accessToken')
   })
   test('Refresh', async () => {
     const tokens = await api
@@ -50,28 +50,28 @@ describe('Test Auth API', () => {
       .then((res) => res.body)
 
     const res = await api.post('/api/user/refresh').send({ refreshToken: tokens.refreshToken }).expect(200)
-    expect(res.body).toHaveProperty('token')
+    expect(res.body).toHaveProperty('accessToken')
   })
 })
 
-describe('Test Post API', () => {
+describe('Test todo API', () => {
   beforeAll(async () => {
     const response = await api.post('/api/user/login').send({ email: 'admin@mail.com', password: 'admin' })
     token = response.body.accessToken
   })
-  let postId
+  let todoId
 
-  test('Post api - POST', async () => {
-    const res = await api.post('/api/post').auth(token, { type: 'bearer' }).send(postData)
-    postId = res.body.id
+  test('todo api - POST', async () => {
+    const res = await api.post('/api/todo').auth(token, { type: 'bearer' }).send(todoData)
+    todoId = res.body.id
     expect(res.status).toBe(200)
     expect(res.headers['content-type']).toMatch('application/json')
-    expect(res.body.body).toBe(postData.body)
-    expect(res.body.userId).toBe(postData.userId)
+    expect(res.body.title).toBe(todoData.title)
+    expect(res.body.userId).toBe(todoData.userId)
   })
-  test('Post api - GET all', async () => {
+  test('todo api - GET all', async () => {
     await api
-      .get('/api/post')
+      .get('/api/todo')
       .auth(token, { type: 'bearer' })
       .expect(200)
       .expect('Content-Type', /application\/json/)
@@ -81,31 +81,31 @@ describe('Test Post API', () => {
       })
   })
 
-  test('Post api - GET one', async () => {
+  test('todo api - GET one', async () => {
     await api
-      .get('/api/post/' + postId)
+      .get('/api/todo/' + todoId)
       .auth(token, { type: 'bearer' })
       .expect(200)
       .expect('Content-Type', /application\/json/)
   })
 
-  test('Post api - PUT', async () => {
-    const res = await api.put(`/api/post/${postId}`).auth(token, { type: 'bearer' }).send({
-      body: 'new body',
+  test('todo api - PUT', async () => {
+    const res = await api.put(`/api/todo/${todoId}`).auth(token, { type: 'bearer' }).send({
+      title: 'new body',
     })
     expect(res.status).toBe(200)
     expect(res.headers['content-type']).toMatch('application/json')
-    expect(res.body.body).toBe('new body')
+    expect(res.body.title).toBe('new body')
   })
 
-  test('Post api - DELETE', async () => {
-    const res = await api.delete(`/api/post/${postId}`).auth(token, { type: 'bearer' })
+  test('todo api - DELETE', async () => {
+    const res = await api.delete(`/api/todo/${todoId}`).auth(token, { type: 'bearer' })
 
     expect(res.status).toBe(200)
   })
 
-  test('Post api - POST with error', async () => {
-    const res = await api.post('/api/post').auth(token, { type: 'bearer' }).send({})
+  test('todo api - POST with error', async () => {
+    const res = await api.post('/api/todo').auth(token, { type: 'bearer' }).send({})
 
     expect(res.status).toBe(400)
   })

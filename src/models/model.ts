@@ -50,15 +50,18 @@ UserModel.init(
   },
 )
 
-interface PostAttributes {
+interface TodoAttributes {
   id: number
-  body: string
+  title: string
+  completed: boolean
   userId: number
 }
-class PostModel extends Model<PostAttributes> implements PostAttributes {
+class TodoModel extends Model<TodoAttributes> implements TodoAttributes {
   public id!: number
 
-  public body!: string
+  public title!: string
+
+  public completed!: boolean
 
   public userId!: number
 
@@ -66,7 +69,7 @@ class PostModel extends Model<PostAttributes> implements PostAttributes {
 
   public readonly updatedAt!: Date
 }
-PostModel.init(
+TodoModel.init(
   {
     // Здесь определяются атрибуты модели
     id: {
@@ -75,8 +78,12 @@ PostModel.init(
       primaryKey: true,
       unique: true,
     },
-    body: {
+    title: {
       type: DataTypes.STRING,
+      allowNull: false,
+    },
+    completed: {
+      type: DataTypes.BOOLEAN,
       allowNull: false,
     },
     userId: {
@@ -90,12 +97,12 @@ PostModel.init(
   },
   {
     sequelize,
-    tableName: 'post',
+    tableName: 'todo',
     timestamps: true,
   },
 )
 
-UserModel.hasMany(PostModel, { foreignKey: 'userId' })
-PostModel.belongsTo(UserModel, { foreignKey: 'userId' })
+UserModel.hasMany(TodoModel, { foreignKey: 'userId' })
+TodoModel.belongsTo(UserModel, { foreignKey: 'userId' })
 
-export { UserModel, PostModel }
+export { UserModel, TodoModel }

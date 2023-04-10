@@ -1,18 +1,18 @@
 import { NextFunction, Request, Response } from 'express'
 import ApiError from '../errors/ApiError'
-import PostService from '../services/postService'
+import TodoService from '../services/todoService'
 import { checkValidationError } from '../validation/validation'
 
-class PostController {
+class TodoController {
   async getAll(req: Request, res: Response, next: NextFunction) {
     try {
       const limit = req.query?.limit ? parseInt(req.query?.limit?.toString(), 10) : 25
       const page = req.query?.page ? parseInt(req.query?.page?.toString(), 10) : 1
-      const offset = page * limit || 0
+      const offset = (page - 1) * limit || 0
 
-      const posts = await PostService.getAllPosts(limit, offset)
+      const todos = await TodoService.getAllTodos(req.body.user.id, limit, offset)
 
-      return res.status(200).json(posts)
+      return res.status(200).json(todos)
     } catch (error) {
       const mes = error.message + error.messages.join(', ')
       next(ApiError.badRequestError(mes))
@@ -28,9 +28,9 @@ class PostController {
       } catch (e) {
         next(ApiError.badRequestError('Param id must be number'))
       }
-      const post = await PostService.getOnePost(numId)
+      const todo = await TodoService.getOneTodo(req.body.user.id, numId)
 
-      return res.status(200).json(post)
+      return res.status(200).json(todo)
     } catch (error) {
       next(ApiError.badRequestError(error.message))
     }
@@ -41,8 +41,8 @@ class PostController {
       checkValidationError(req)
 
       const { body } = req
-      const post = await PostService.createPost(body)
-      return res.status(200).json(post)
+      const todo = await TodoService.createTodo(req.body.user.id, body)
+      return res.status(200).json(todo)
     } catch (error) {
       next(ApiError.badRequestError(error.message))
     }
@@ -60,8 +60,8 @@ class PostController {
         next(ApiError.badRequestError('Param id must be number'))
       }
       const { body } = req
-      const post = await PostService.updatePost(numId, body)
-      return res.status(200).json(post)
+      const todo = await TodoService.updateTodo(req.body.user.id, numId, body)
+      return res.status(200).json(todo)
     } catch (error) {
       next(ApiError.badRequestError(error.message))
     }
@@ -76,13 +76,13 @@ class PostController {
       } catch (e) {
         next(ApiError.badRequestError('Param id must be number'))
       }
-      const post = await PostService.deletePost(numId)
+      const todo = await TodoService.deleteTodo(req.body.user.id, numId)
 
-      return res.status(200).json(post)
+      return res.status(200).json(todo)
     } catch (error) {
       next(ApiError.badRequestError(error.message))
     }
   }
 }
 
-export default new PostController()
+export default new TodoController()

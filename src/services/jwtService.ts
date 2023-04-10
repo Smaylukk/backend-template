@@ -5,7 +5,7 @@ class JWTService {
     const secret = process.env.JWT_ACCESS_SECRET
 
     return jwt.sign(payload, secret, {
-      expiresIn: '15s',
+      expiresIn: '15m',
     })
   }
 

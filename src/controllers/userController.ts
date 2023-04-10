@@ -42,8 +42,8 @@ class UserController implements IUserController {
       checkValidationError(req)
 
       const user = req.body.user as IUserDTO
-      const token = await AuthService.check(user)
-      return res.status(200).json({ token })
+      const accessToken = await AuthService.check(user)
+      return res.status(200).json({ accessToken })
     } catch (error) {
       next(ApiError.badRequestError(error.message))
     }
@@ -54,8 +54,8 @@ class UserController implements IUserController {
       checkValidationError(req)
 
       const { refreshToken } = req.body
-      const token = await AuthService.refreshAccessToken(refreshToken)
-      return res.status(200).json({ token })
+      const accessToken = await AuthService.refreshAccessToken(refreshToken)
+      return res.status(200).json({ accessToken })
     } catch (error) {
       next(ApiError.badRequestError(error.message))
     }

@@ -1,8 +1,8 @@
 import express, { Express } from 'express'
-import IORedis from 'ioredis'
 import * as dotenv from 'dotenv'
 import cors from 'cors'
 import * as http from 'http'
+import * as console from 'console'
 import router from './routes/index'
 import errorMiddleware from './middlewares/errorMiddleware'
 import sequelize from './db'
@@ -14,7 +14,6 @@ dotenv.config({ path: envFile })
 
 const port = process.env.PORT || 5005
 
-const redisClient = new IORedis()
 const app: Express = express()
 // prettier-ignore
 app
@@ -28,9 +27,9 @@ export const server = http.createServer(app)
 const start = async () => {
   await sequelize.authenticate()
   sequelize
-    .sync({ force: false, logging: !test })
+    .sync({ force: false, logging: !test && console.log })
     .then(async () => {
-      if (test) {
+      if (!test) {
         await new StartService().initValue()
       }
     })

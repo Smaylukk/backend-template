@@ -1,9 +1,9 @@
 import sequelize from '../../src/db'
-import PostService from '../../src/services/postService'
-import { PostDTO } from '../../src/models/dto/PostDTO'
+import TodoService from '../../src/services/todoService'
+import { TodoDTO } from '../../src/models/dto/TodoDTO'
 
-let postData = new PostDTO({
-  body: 'tests post',
+let todoData = new TodoDTO({
+  title: 'tests todo',
   userId: 1,
 })
 
@@ -16,43 +16,43 @@ afterAll(async () => {
   await sequelize.close()
 })
 
-describe('Test Post service', () => {
+describe('Test Todo service', () => {
   beforeEach(async () => {
-    await PostService.deletePostByBody(postData.body)
+    await TodoService.deleteTodoByTitle(todoData.title)
   })
   afterAll(async () => {
-    await PostService.deletePostByBody(postData.body)
+    await TodoService.deleteTodoByTitle(todoData.title)
   })
 
-  test('createPost', async () => {
-    const post = await PostService.createPost(postData)
-    expect(post.id).toBeDefined()
-    expect(post.body).toBe(postData.body)
+  test('create todo', async () => {
+    const todo = await TodoService.createTodo(todoData.userId, todoData)
+    expect(todo.id).toBeDefined()
+    expect(todo.title).toBe(todoData.title)
   })
-  test('updateDoctor', async () => {
-    const post = await PostService.createPost(postData)
-    const id = post.id
-    const newBody = 'New body'
-    const savePost = await PostService.updatePost(id, { body: newBody })
-    expect(savePost.id).toBeDefined()
-    expect(savePost.body).toBe(newBody)
-    await PostService.deletePost(id)
+  test('update todo', async () => {
+    const todo = await TodoService.createTodo(todoData.userId, todoData)
+    const id = todo.id
+    const newTitle = 'New title'
+    const saveTodo = await TodoService.updateTodo(todoData.userId, id, { title: newTitle })
+    expect(saveTodo.id).toBeDefined()
+    expect(saveTodo.title).toBe(newTitle)
+    await TodoService.deleteTodo(todoData.userId, id)
   })
   test('getOne', async () => {
-    const post = await PostService.createPost(postData)
-    const id = post.id
-    const savePost = await PostService.getOnePost(id)
-    expect(savePost.id).toBeDefined()
-    expect(savePost.body).toBe(postData.body)
+    const todo = await TodoService.createTodo(todoData.userId, todoData)
+    const id = todo.id
+    const saveTodo = await TodoService.getOneTodo(todoData.userId, id)
+    expect(saveTodo.id).toBeDefined()
+    expect(saveTodo.title).toBe(todoData.title)
   })
   test('getAll', async () => {
-    const posts = await PostService.getAllPosts()
-    expect.arrayContaining(posts.rows)
+    const todos = await TodoService.getAllTodos(todoData.userId)
+    expect.arrayContaining(todos.rows)
   })
   test('delete', async () => {
-    const post = await PostService.createPost(postData)
-    const id = post.id
-    const deletedDoc = await PostService.deletePost(id)
-    expect(deletedDoc).toBe(1)
+    const todo = await TodoService.createTodo(todoData.userId, todoData)
+    const id = todo.id
+    const deletedTodo = await TodoService.deleteTodo(todoData.userId, id)
+    expect(deletedTodo).toBe(1)
   })
 })

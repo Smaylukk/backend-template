@@ -8,7 +8,8 @@ const router = Router()
 router.post(
   '/reg',
   [
-    body('email').notEmpty().withMessage('Email обовязковий').isEmail().withMessage('Email має бути email-формат'),
+    body('email').notEmpty().withMessage('Email обовязковий').isEmail()
+      .withMessage('Email має бути email-формат'),
     body('name').notEmpty().withMessage('Найменування обовязкове'),
     body('password')
       .notEmpty()
