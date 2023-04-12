@@ -26,5 +26,5 @@
 
 Для запуску потрібно:
 * Клонувати гілку
-* docker-compose up
-* yarn start or npm start
+* `docker-compose up`
+* `yarn start` or `npm start`
