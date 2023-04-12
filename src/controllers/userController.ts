@@ -1,63 +1,55 @@
-import { NextFunction, Request, Response } from 'express'
+import { Context } from 'koa'
 import ApiError from '../errors/ApiError'
-import { checkValidationError } from '../validation/validation'
 import { IUserDTO } from '../models/dto/UserDTO'
 import AuthService from '../services/authService'
 
-interface IUserController {
-  registration(req: Request, res: Response, next: NextFunction): Promise<Response>
-  login(req: Request, res: Response, next: NextFunction): Promise<Response>
-  check(req: Request, res: Response, next: NextFunction): Promise<Response>
-}
-
-class UserController implements IUserController {
-  async registration(req: Request, res: Response, next: NextFunction) {
+class UserController {
+  async registration(ctx: Context) {
     try {
-      checkValidationError(req)
-
-      const { email, name, password } = req.body
+      const { email, name, password } = ctx.request.body as { email: string; name: string; password: string }
       const tokens = await AuthService.registration(email, name, password)
-      return res.status(200).json(tokens)
+      ctx.status = 200
+      ctx.body = tokens
     } catch (error) {
-      const mes = !(error.message + error.errors) ? '' : error.errors.map((item) => JSON.stringify(item)).join(', ')
-      next(ApiError.badRequestError(mes))
+      const mes = !error.errors ? error.message : error.errors.map((item) => JSON.stringify(item)).join(', ')
+      throw ApiError.badRequestError(mes)
     }
   }
 
-  async login(req: Request, res: Response, next: NextFunction) {
+  async login(ctx: Context) {
     try {
-      checkValidationError(req)
-
-      const { email, password } = req.body
+      const { email, password } = ctx.request.body as { email: string; password: string }
       const tokens = await AuthService.login(email, password)
-      return res.status(200).json(tokens)
+      ctx.status = 200
+      ctx.body = tokens
     } catch (error) {
       console.log(error)
-      next(ApiError.badRequestError(error.message))
+      const mes = !error.errors ? error.message : error.errors.map((item) => JSON.stringify(item)).join(', ')
+      throw ApiError.badRequestError(mes)
     }
   }
 
-  async check(req: Request, res: Response, next: NextFunction) {
+  async check(ctx: Context) {
     try {
-      checkValidationError(req)
-
-      const user = req.body.user as IUserDTO
+      const user = ctx.state.user as IUserDTO
       const accessToken = await AuthService.check(user)
-      return res.status(200).json({ accessToken })
+      ctx.status = 200
+      ctx.body = { accessToken }
     } catch (error) {
-      next(ApiError.badRequestError(error.message))
+      const mes = !error.errors ? error.message : error.errors.map((item) => JSON.stringify(item)).join(', ')
+      throw ApiError.badRequestError(mes)
     }
   }
 
-  async refresh(req: Request, res: Response, next: NextFunction) {
+  async refresh(ctx: Context) {
     try {
-      checkValidationError(req)
-
-      const { refreshToken } = req.body
+      const { refreshToken } = ctx.request.body as { refreshToken: string }
       const accessToken = await AuthService.refreshAccessToken(refreshToken)
-      return res.status(200).json({ accessToken })
+      ctx.status = 200
+      ctx.body = { accessToken }
     } catch (error) {
-      next(ApiError.badRequestError(error.message))
+      const mes = !error.errors ? error.message : error.errors.map((item) => JSON.stringify(item)).join(', ')
+      throw ApiError.badRequestError(mes)
     }
   }
 }

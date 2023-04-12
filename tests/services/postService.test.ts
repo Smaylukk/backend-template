@@ -1,4 +1,4 @@
-import sequelize from '../../src/db'
+import sequelize from '../../src/services/db'
 import TodoService from '../../src/services/todoService'
 import { TodoDTO } from '../../src/models/dto/TodoDTO'
 

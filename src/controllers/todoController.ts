@@ -1,86 +1,74 @@
-import { NextFunction, Request, Response } from 'express'
+import { Context } from 'koa'
 import ApiError from '../errors/ApiError'
 import TodoService from '../services/todoService'
-import { checkValidationError } from '../validation/validation'
+import { ITodoDTO } from '../models/dto/TodoDTO'
 
 class TodoController {
-  async getAll(req: Request, res: Response, next: NextFunction) {
+  async getAll(ctx: Context) {
     try {
-      const limit = req.query?.limit ? parseInt(req.query?.limit?.toString(), 10) : 25
-      const page = req.query?.page ? parseInt(req.query?.page?.toString(), 10) : 1
+      const limit = ctx.query?.limit ? parseInt(ctx.query?.limit?.toString(), 10) : 25
+      const page = ctx.query?.page ? parseInt(ctx.query?.page?.toString(), 10) : 1
       const offset = (page - 1) * limit || 0
 
-      const todos = await TodoService.getAllTodos(req.body.user.id, limit, offset)
+      const todos = await TodoService.getAllTodos(ctx.state.user.id, limit, offset)
 
-      return res.status(200).json(todos)
+      ctx.status = 200
+      ctx.body = todos
     } catch (error) {
       const mes = error.message + error.messages.join(', ')
-      next(ApiError.badRequestError(mes))
+      throw ApiError.badRequestError(mes)
     }
   }
 
-  async getOne(req: Request, res: Response, next: NextFunction) {
+  async getOne(ctx: Context) {
     try {
-      const { id } = req.params
-      let numId = 0
-      try {
-        numId = parseInt(id, 10)
-      } catch (e) {
-        next(ApiError.badRequestError('Param id must be number'))
-      }
-      const todo = await TodoService.getOneTodo(req.body.user.id, numId)
+      const { id } = ctx.params
+      const todo = await TodoService.getOneTodo(ctx.state.user.id, id)
 
-      return res.status(200).json(todo)
+      ctx.status = 200
+      ctx.body = todo
     } catch (error) {
-      next(ApiError.badRequestError(error.message))
+      const mes = error.message + error.messages.join(', ')
+      throw ApiError.badRequestError(mes)
     }
   }
 
-  async create(req: Request, res: Response, next: NextFunction) {
+  async create(ctx: Context) {
     try {
-      checkValidationError(req)
+      const body = ctx.request.body as ITodoDTO
+      const todo = await TodoService.createTodo(ctx.state.user.id, body)
 
-      const { body } = req
-      const todo = await TodoService.createTodo(req.body.user.id, body)
-      return res.status(200).json(todo)
+      ctx.status = 200
+      ctx.body = todo
     } catch (error) {
-      next(ApiError.badRequestError(error.message))
+      const mes = error.message + error.messages.join(', ')
+      throw ApiError.badRequestError(mes)
     }
   }
 
-  async update(req: Request, res: Response, next: NextFunction) {
+  async update(ctx: Context) {
     try {
-      checkValidationError(req)
-
-      const { id } = req.params
-      let numId = 0
-      try {
-        numId = parseInt(id, 10)
-      } catch (e) {
-        next(ApiError.badRequestError('Param id must be number'))
-      }
-      const { body } = req
-      const todo = await TodoService.updateTodo(req.body.user.id, numId, body)
-      return res.status(200).json(todo)
+      const { id } = ctx.params
+      const { body } = ctx.request
+      const todo = await TodoService.updateTodo(ctx.state.user.id, id, body)
+      ctx.status = 200
+      ctx.body = todo
     } catch (error) {
-      next(ApiError.badRequestError(error.message))
+      const mes = error.message + error.messages.join(', ')
+      throw ApiError.badRequestError(mes)
     }
   }
 
-  async delete(req: Request, res: Response, next: NextFunction) {
+  async delete(ctx: Context) {
     try {
-      const { id } = req.params
-      let numId = 0
-      try {
-        numId = parseInt(id, 10)
-      } catch (e) {
-        next(ApiError.badRequestError('Param id must be number'))
-      }
-      const todo = await TodoService.deleteTodo(req.body.user.id, numId)
+      const { id } = ctx.params
+      const todo = await TodoService.deleteTodo(ctx.state.user.id, id)
 
-      return res.status(200).json(todo)
+      ctx.status = 200
+      ctx.body = todo
     } catch (error) {
-      next(ApiError.badRequestError(error.message))
+      const mes = error.message + error.messages.join(', ')
+      throw ApiError.badRequestError(mes)
     }
   }
 }

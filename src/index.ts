@@ -1,11 +1,13 @@
-import express, { Express } from 'express'
+import Koa from 'koa'
+import json from 'koa-json'
+import cors from 'koa-cors'
+import bodyParser from 'koa-bodyparser'
+import { createServer } from 'http'
 import * as dotenv from 'dotenv'
-import cors from 'cors'
-import * as http from 'http'
 import * as console from 'console'
 import router from './routes/index'
 import errorMiddleware from './middlewares/errorMiddleware'
-import sequelize from './db'
+import sequelize from './services/db'
 import { StartService } from './services/startService'
 
 const test = process.env.NODE_ENV === 'test'
@@ -14,15 +16,16 @@ dotenv.config({ path: envFile })
 
 const port = process.env.PORT || 5005
 
-const app: Express = express()
+const app = new Koa()
 // prettier-ignore
 app
-  .use(cors())
-  .use(express.json())
-  .use(router)
-  .use('/static', express.static('static'))
   .use(errorMiddleware)
-export const server = http.createServer(app)
+  .use(cors())
+  .use(bodyParser())
+  .use(json())
+  .use(router.routes())
+  .use(router.allowedMethods())
+export const server = createServer(app.callback())
 
 const start = async () => {
   await sequelize.authenticate()

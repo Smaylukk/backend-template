@@ -1,5 +1,5 @@
 import UserService from '../../src/services/userService'
-import sequelize from '../../src/db'
+import sequelize from '../../src/services/db'
 import { UserDTO } from '../../src/models/dto/UserDTO'
 
 let userData = new UserDTO({

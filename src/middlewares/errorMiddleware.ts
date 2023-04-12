@@ -1,11 +1,18 @@
-import { NextFunction, Request, Response } from 'express'
+import { Next, Context } from 'koa'
 import ApiError from '../errors/ApiError'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export default (error: Error, req: Request, res: Response, next: NextFunction) => {
-  if (error instanceof ApiError) {
-    return res.status(error.status).json({ status: error.status, message: error.message })
+export default async (ctx: Context, next: Next) => {
+  try {
+    await next()
+  } catch (error) {
+    if (error instanceof ApiError) {
+      ctx.status = error.status
+      ctx.body = { status: error.status, message: error.message }
+      return ctx
+    }
+    ctx.status = 500
+    ctx.body = { message: `Непередбачувана помилка - ${error}` }
+    return ctx
   }
-
-  return res.status(500).json({ message: `Непередбачувана помилка - ${error}` })
 }

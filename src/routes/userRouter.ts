@@ -1,30 +1,24 @@
-import { Router } from 'express'
-import { body } from 'express-validator'
+import Router from 'koa-router'
+import Joi from 'joi'
 import userController from '../controllers/userController'
 import authMiddleware from '../middlewares/authMiddleware'
+import validationMiddleware from '../middlewares/validationMiddleware'
 
-const router = Router()
+const schema = Joi.object({
+  email: Joi.string()
+    .required()
+    .email()
+    .messages({ 'string.email': 'Email має бути email-формат', 'any.required': 'Email обовязковий' }),
+  name: Joi.string().required().messages({ 'any.required': 'Найменування обовязкове' }),
+  password: Joi.string()
+    .required()
+    .min(4)
+    .messages({ 'string.min': 'Пароль має бути довжиною від 4 символів', 'any.required': 'пароль обовязковий' }),
+})
+const router = new Router()
 
-router.post(
-  '/reg',
-  [
-    body('email').notEmpty().withMessage('Email обовязковий').isEmail()
-      .withMessage('Email має бути email-формат'),
-    body('name').notEmpty().withMessage('Найменування обовязкове'),
-    body('password')
-      .notEmpty()
-      .withMessage('Пароль обовязковий')
-      .isLength({ min: 4 })
-      .withMessage('Довжина паролю від 4 символів'),
-  ],
-  userController.registration,
-)
-router.post(
-  '/login',
-  // eslint-disable-next-line newline-per-chained-call
-  [body('email').notEmpty().withMessage('Email is required').isEmail().withMessage('Email must be in email-format')],
-  userController.login,
-)
+router.post('/reg', validationMiddleware(schema), userController.registration)
+router.post('/login', userController.login)
 router.get('/auth', authMiddleware, userController.check)
 router.post('/refresh', userController.refresh)
 

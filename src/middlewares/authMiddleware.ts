@@ -1,36 +1,25 @@
-import { NextFunction, Request, Response } from 'express'
+import { Next, Context } from 'koa'
 import ApiError from '../errors/ApiError'
 import jwtService from '../services/jwtService'
 
-export default (req: Request, res: Response, next: NextFunction) => {
-  if (req.method === 'OPTIONS') {
+export default async (ctx: Context, next: Next) => {
+  if (ctx.method === 'OPTIONS') {
     return next()
   }
 
+  const { authorization } = ctx.headers
+  if (!authorization || authorization.indexOf('Bearer') === -1) {
+    throw ApiError.unauthorizedError('Користувач не авторизований - відсутній токен')
+  }
+
+  const token = authorization.split(' ')[1]
+  if (!token) {
+    throw ApiError.unauthorizedError('Користувач не авторизований - токен пустий')
+  }
   try {
-    const { authorization } = req.headers
-    if (!authorization || authorization.indexOf('Bearer') === -1) {
-      return next(
-        ApiError.unauthorizedError(
-          'Користувач не авторизований - відсутній токен',
-        ),
-      )
-    }
-
-    const token = authorization.split(' ')[1]
-    if (!token) {
-      return next(
-        ApiError.unauthorizedError(
-          'Користувач не авторизований - токен пустий',
-        ),
-      )
-    }
-
-    req.body.user = jwtService.verifyToken(token)
-    next()
+    ctx.state.user = jwtService.verifyToken(token)
+    return next()
   } catch (error) {
-    return next(
-      ApiError.unauthorizedError(`Помилка авторизації - ${error.message}`),
-    )
+    throw ApiError.unauthorizedError(`Помилка авторизації - ${error.message}`)
   }
 }
