@@ -33,6 +33,9 @@
     "max-len": ["error", { "code": 120 }],
     "object-curly-newline": "off",
     "max-classes-per-file": "off",
-    "import/no-unresolved": "off"
+    "import/no-unresolved": "off",
+    "newline-per-chained-call": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "import/no-extraneous-dependencies": "off"
   }
 }
