@@ -1,9 +1,8 @@
-node_modules/
-.idea/
+/node_modules
+/.idea
 *.lock
 .eslintignore
 .gitignore
 .prettierignore
-dist/
-
-/coverage/
+/dist
+/coverage

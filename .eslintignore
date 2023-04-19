@@ -1,11 +1,10 @@
-node_modules/
-tests/
-.idea/
+/node_modules
+/.idea
 *.lock
 .eslintignore
 .gitignore
 .prettierignore
 README.md
 *.json
-dist/
-/coverage/
+/dist
+/coverage

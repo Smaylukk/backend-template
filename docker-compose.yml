@@ -1,0 +1,59 @@
+version: "3.9"
+services:
+  postgres:
+    container_name: postgres_container
+    image: postgres:13.3
+    environment:
+      POSTGRES_DB: "postgresdb"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgresdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 4G
+    networks:
+      - app-network
+
+  redis:
+    container_name: redis_container
+    image: redis:latest
+    networks:
+      - app-network
+
+  server:
+    build:
+      dockerfile: Dockerfile
+      context: ./server
+    container_name: server
+    environment:
+      - PORT=5001
+      - DB_NAME=postgresdb
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_SSL=0
+      - JWT_SECRET=Dima
+      - WS_PORT=4321
+      - REDIS_HOST=redis://redis:6379
+      - REDIS_PASS=SPA_pass
+    ports:
+      - '5001:5001'
+    expose:
+      - '5001'
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
