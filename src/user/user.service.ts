@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/sequelize'
+import bcrypt from 'bcrypt'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { User } from './models/user.model'
@@ -11,23 +12,40 @@ export class UserService {
     private readonly userModel: typeof User,
   ) {}
 
-  async create(user: User): Promise<User> {
-    return 'This action adds a new user'
+  async createUser(user: CreateUserDto): Promise<User> {
+    const candidate = await this.userModel.findOne({ where: { email: user.email } })
+    if (candidate) {
+      throw new Error(`User with email ${user.email} created`)
+    }
+    user.password = bcrypt.hashSync(user.password, 5)
+    return this.userModel.create({ ...user })
   }
 
-  findAll() {
-    return `This action returns all user`
+  getAll() {
+    return this.userModel.findAll()
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`
+  getOne(id: number) {
+    return this.userModel.findByPk(id)
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`
+  getOneUserByEmail(email: string) {
+    return this.userModel.findOne({ where: { email } })
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`
+  async updateUser(id: number, updateUser: UpdateUserDto) {
+    const user = await this.userModel.findByPk(id)
+    if (user) {
+      await user.update(updateUser)
+    }
+    return user
+  }
+
+  deleteUser(id: number) {
+    return this.userModel.destroy({ where: { id } })
+  }
+
+  deleteUserByEmail(email: string) {
+    return this.userModel.destroy({ where: { email } })
   }
 }
