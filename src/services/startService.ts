@@ -1,4 +1,5 @@
 /// <reference lib="dom" />
+import * as bcrypt from 'bcrypt'
 import { UserDTO } from '../models/dto/UserDTO'
 import { TodoDTO } from '../models/dto/TodoDTO'
 import { TodoModel, UserModel } from '../models/model'
@@ -11,7 +12,7 @@ export class StartService {
       const adminData = new UserDTO({
         name: 'admin',
         email: 'admin@mail.com',
-        password: 'admin',
+        password: bcrypt.hashSync('admin', 5),
       })
       await UserModel.create(adminData)
       // prettier-ignore
