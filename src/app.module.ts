@@ -4,6 +4,7 @@ import { SequelizeModule } from '@nestjs/sequelize'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { UserModule } from './user/user.module'
+import { AuthModule } from './auth/auth.module'
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { UserModule } from './user/user.module'
       autoLoadModels: true,
     }),
     UserModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
