@@ -4,14 +4,8 @@ import { checkValidationError } from '../validation/validation'
 import { IUserDTO } from '../models/dto/UserDTO'
 import AuthService from '../services/authService'
 
-interface IUserController {
-  registration(req: Request, res: Response, next: NextFunction): Promise<Response>
-  login(req: Request, res: Response, next: NextFunction): Promise<Response>
-  check(req: Request, res: Response, next: NextFunction): Promise<Response>
-}
-
-class UserController implements IUserController {
-  async registration(req: Request, res: Response, next: NextFunction) {
+class UserController {
+  async registration(req: Request, res: Response, next: NextFunction): Promise<Response> {
     try {
       checkValidationError(req)
 
@@ -24,7 +18,7 @@ class UserController implements IUserController {
     }
   }
 
-  async login(req: Request, res: Response, next: NextFunction) {
+  async login(req: Request, res: Response, next: NextFunction): Promise<Response> {
     try {
       checkValidationError(req)
 
@@ -37,7 +31,7 @@ class UserController implements IUserController {
     }
   }
 
-  async check(req: Request, res: Response, next: NextFunction) {
+  async check(req: Request, res: Response, next: NextFunction): Promise<Response> {
     try {
       checkValidationError(req)
 
@@ -49,7 +43,7 @@ class UserController implements IUserController {
     }
   }
 
-  async refresh(req: Request, res: Response, next: NextFunction) {
+  async refresh(req: Request, res: Response, next: NextFunction): Promise<Response> {
     try {
       checkValidationError(req)
 

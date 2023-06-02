@@ -3,7 +3,7 @@ import { ITodoDTO, TodoDTO } from '../models/dto/TodoDTO'
 
 class TodoService {
   async getAllTodos(userId, limit = 25, offset = 0) {
-    return TodoModel.findAndCountAll({
+    return TodoModel.findAll({
       include: {
         model: UserModel,
         attributes: {
