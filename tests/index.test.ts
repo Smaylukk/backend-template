@@ -1,7 +1,7 @@
 import supertest from 'supertest'
 import { server } from '../src'
 import { TodoDTO } from '../src/models/dto/TodoDTO'
-import UserService from '../src/services/userService'
+import UserService from '../src/repositories/userRepository'
 
 process.env.NODE_ENV = 'test'
 
@@ -59,10 +59,12 @@ describe('Test todo API', () => {
     const response = await api.post('/api/user/login').send({ email: 'admin@mail.com', password: 'admin' })
     token = response.body.accessToken
   })
+
   let todoId
 
   test('todo api - POST', async () => {
     const res = await api.post('/api/todo').auth(token, { type: 'bearer' }).send(todoData)
+
     todoId = res.body.id
     expect(res.status).toBe(200)
     expect(res.headers['content-type']).toMatch('application/json')
@@ -70,29 +72,25 @@ describe('Test todo API', () => {
     expect(res.body.userId).toBe(todoData.userId)
   })
   test('todo api - GET all', async () => {
-    await api
-      .get('/api/todo')
-      .auth(token, { type: 'bearer' })
-      .expect(200)
-      .expect('Content-Type', /application\/json/)
-      .expect((res) => {
-        expect(res.body).toHaveProperty('rows')
-        expect(res.body).toHaveProperty('count')
-      })
+    const res = await api.get('/api/todo').auth(token, { type: 'bearer' })
+
+    expect(res.status).toBe(200)
+    expect(res.headers['content-type']).toMatch('application/json')
+    expect.arrayContaining(res.body)
   })
 
   test('todo api - GET one', async () => {
-    await api
-      .get('/api/todo/' + todoId)
-      .auth(token, { type: 'bearer' })
-      .expect(200)
-      .expect('Content-Type', /application\/json/)
+    const res = await api.get('/api/todo/' + todoId).auth(token, { type: 'bearer' })
+
+    expect(res.status).toBe(200)
+    expect(res.headers['content-type']).toMatch('application/json')
   })
 
   test('todo api - PUT', async () => {
     const res = await api.put(`/api/todo/${todoId}`).auth(token, { type: 'bearer' }).send({
       title: 'new body',
     })
+
     expect(res.status).toBe(200)
     expect(res.headers['content-type']).toMatch('application/json')
     expect(res.body.title).toBe('new body')

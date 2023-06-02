@@ -6,11 +6,7 @@ import { checkValidationError } from '../validation/validation'
 class TodoController {
   async getAll(req: Request, res: Response, next: NextFunction) {
     try {
-      const limit = req.query?.limit ? parseInt(req.query?.limit?.toString(), 10) : 25
-      const page = req.query?.page ? parseInt(req.query?.page?.toString(), 10) : 1
-      const offset = (page - 1) * limit || 0
-
-      const todos = await TodoService.getAllTodos(req.body.user.id, limit, offset)
+      const todos = await TodoService.getAllTodos(req.body.user.id)
 
       return res.status(200).json(todos)
     } catch (error) {

@@ -5,7 +5,7 @@ import * as http from 'http'
 import * as console from 'console'
 import router from './routes/index'
 import errorMiddleware from './middlewares/errorMiddleware'
-import sequelize from './db'
+import sequelize from './services/db'
 import { StartService } from './services/startService'
 
 const test = process.env.NODE_ENV === 'test'

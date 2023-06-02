@@ -1,64 +1,25 @@
-import { TodoModel, UserModel } from '../models/model'
-import { ITodoDTO, TodoDTO } from '../models/dto/TodoDTO'
+import { ITodoDTO } from '../models/dto/TodoDTO'
+import TodoRepository from '../repositories/todoRepository'
 
 class TodoService {
-  async getAllTodos(userId, limit = 25, offset = 0) {
-    return TodoModel.findAll({
-      include: {
-        model: UserModel,
-        attributes: {
-          exclude: ['password', 'createdAt', 'updatedAt'],
-        },
-      },
-      limit,
-      offset,
-      order: [['createdAt', 'desc']],
-      attributes: {
-        exclude: ['createdAt', 'updatedAt'],
-      },
-      where: { userId },
-    })
+  async getAllTodos(userId) {
+    return TodoRepository.getAll(userId)
   }
 
   async getOneTodo(userId, id: number) {
-    const todo = await TodoModel.findByPk(id, {
-      include: [
-        {
-          model: UserModel,
-          attributes: {
-            exclude: ['password', 'createdAt', 'updatedAt'],
-          },
-        },
-      ],
-      attributes: {
-        exclude: ['createdAt', 'updatedAt'],
-      },
-    })
-    if (todo.userId === userId) {
-      return todo
-    }
-    return null
+    return TodoRepository.getOne(userId, id)
   }
 
   async createTodo(userId: number, data: ITodoDTO) {
-    const todoData = new TodoDTO({ ...data, userId })
-    return TodoModel.create(todoData, {})
+    return TodoRepository.create(userId, data)
   }
 
   async updateTodo(userId: number, id: number, data) {
-    const todo = await TodoModel.findByPk(id)
-    if (todo && todo.userId === userId) {
-      await todo.update(data)
-    }
-    return todo
+    return TodoRepository.update(userId, id, data)
   }
 
   async deleteTodo(userId: number, id: number) {
-    return TodoModel.destroy({ where: { id, userId } })
-  }
-
-  async deleteTodoByTitle(title: string) {
-    return TodoModel.destroy({ where: { title } })
+    return TodoRepository.delete(userId, id)
   }
 }
 

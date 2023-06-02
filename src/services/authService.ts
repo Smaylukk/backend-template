@@ -1,16 +1,16 @@
 import bcrypt from 'bcrypt'
 import Redis from 'ioredis'
 import { UserDTO } from '../models/dto/UserDTO'
-import UserService from './userService'
 import jwtService from './jwtService'
 import ApiError from '../errors/ApiError'
+import UserRepository from '../repositories/userRepository'
 
 class AuthService {
   redis = new Redis()
 
   async registration(email: string, name: string, password: string) {
     const userDTO = new UserDTO({ email, name, password })
-    const user = await UserService.createUser(userDTO)
+    const user = await UserRepository.createUser(userDTO)
 
     const payload = {
       id: user.id,
@@ -24,7 +24,7 @@ class AuthService {
   }
 
   async login(email: string, password: string) {
-    const user = await UserService.getOneUserByEmail(email)
+    const user = await UserRepository.getOneUserByEmail(email)
     if (!user) {
       throw ApiError.badRequestError('Email чи пароль користувача неправильний')
     }

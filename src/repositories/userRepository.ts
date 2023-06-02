@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt'
 import { UserModel } from '../models/model'
 import { IUserDTO, UserDTO } from '../models/dto/UserDTO'
 
-class UserService {
+class UserRepository {
   async getAllUsers() {
     return UserModel.findAll()
   }
@@ -42,4 +42,4 @@ class UserService {
   }
 }
 
-export default new UserService()
+export default new UserRepository()
