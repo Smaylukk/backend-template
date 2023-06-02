@@ -6,11 +6,9 @@ import validationMiddleware from '../middlewares/validationMiddleware'
 const schema = Joi.object({
   title: Joi.string()
     .required()
-    .empty()
     .messages({ 'string.empty': 'Заголовок обовязковий', 'any.required': 'Заголовок обовязковий' }),
   userId: Joi.number()
     .required()
-    .empty()
     .messages({ 'number.empty': 'userId обовязковий', 'any.required': 'userId обовязковий' }),
 }).unknown(true)
 const router = new Router()

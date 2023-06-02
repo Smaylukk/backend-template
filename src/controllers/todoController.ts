@@ -6,11 +6,7 @@ import { ITodoDTO } from '../models/dto/TodoDTO'
 class TodoController {
   async getAll(ctx: Context) {
     try {
-      const limit = ctx.query?.limit ? parseInt(ctx.query?.limit?.toString(), 10) : 25
-      const page = ctx.query?.page ? parseInt(ctx.query?.page?.toString(), 10) : 1
-      const offset = (page - 1) * limit || 0
-
-      const todos = await TodoService.getAllTodos(ctx.state.user.id, limit, offset)
+      const todos = await TodoService.getAllTodos(ctx.state.user.id)
 
       ctx.status = 200
       ctx.body = todos

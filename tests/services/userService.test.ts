@@ -1,4 +1,4 @@
-import UserService from '../../src/services/userService'
+import UserService from '../../src/repositories/userRepository'
 import sequelize from '../../src/services/db'
 import { UserDTO } from '../../src/models/dto/UserDTO'
 
@@ -18,36 +18,37 @@ afterAll(async () => {
 })
 
 describe('Test User service', () => {
-  beforeEach(async () => {
-    await UserService.deleteUserByEmail(userData.email)
-  })
-  afterAll(async () => {
-    await UserService.deleteUserByEmail(userData.email)
-  })
+  let userId = 0
 
   test('createUser', async () => {
     const user = await UserService.createUser(userData)
+    userId = user.id
     expect(user.id).toBeDefined()
     expect(user.email).toBe(userData.email)
     expect(user.name).toBe(userData.name)
     expect(user.password).toBeDefined()
+    await UserService.deleteUser(userId)
   })
   test('getOne', async () => {
     const user = await UserService.createUser(userData)
-    const id = user.id
-    const saveUser = await UserService.getOneUser(id)
+    userId = user.id
+    const saveUser = await UserService.getOneUser(userId)
     expect(saveUser.email).toBe(userData.email)
     expect(saveUser.name).toBe(userData.name)
     expect(user.password).toBeDefined()
+    await UserService.deleteUser(userId)
   })
   test('getAll', async () => {
+    const user = await UserService.createUser(userData)
+    userId = user.id
     const users = await UserService.getAllUsers()
     expect.arrayContaining(users)
+    await UserService.deleteUser(userId)
   })
   test('delete', async () => {
     const user = await UserService.createUser(userData)
-    const id = user.id
-    const deletedUser = await UserService.deleteUser(id)
+    userId = user.id
+    const deletedUser = await UserService.deleteUser(userId)
     expect(deletedUser).toBe(1)
   })
 })

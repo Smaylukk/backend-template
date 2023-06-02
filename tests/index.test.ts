@@ -1,7 +1,7 @@
 import supertest from 'supertest'
 import { server } from '../src'
 import { TodoDTO } from '../src/models/dto/TodoDTO'
-import UserService from '../src/services/userService'
+import UserService from '../src/repositories/userRepository'
 
 process.env.NODE_ENV = 'test'
 
@@ -76,8 +76,7 @@ describe('Test todo API', () => {
 
     expect(res.status).toBe(200)
     expect(res.headers['content-type']).toMatch('application/json')
-    expect(res.body).toHaveProperty('rows')
-    expect(res.body).toHaveProperty('count')
+    expect.arrayContaining(res.body)
   })
 
   test('todo api - GET one', async () => {

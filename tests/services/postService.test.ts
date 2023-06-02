@@ -17,42 +17,45 @@ afterAll(async () => {
 })
 
 describe('Test Todo service', () => {
-  beforeEach(async () => {
-    await TodoService.deleteTodoByTitle(todoData.title)
-  })
-  afterAll(async () => {
-    await TodoService.deleteTodoByTitle(todoData.title)
-  })
-
   test('create todo', async () => {
     const todo = await TodoService.createTodo(todoData.userId, todoData)
+    const todoId = todo.id
     expect(todo.id).toBeDefined()
     expect(todo.title).toBe(todoData.title)
+
+    await TodoService.deleteTodo(todoData.userId, todoId)
   })
   test('update todo', async () => {
     const todo = await TodoService.createTodo(todoData.userId, todoData)
-    const id = todo.id
+    const todoId = todo.id
     const newTitle = 'New title'
-    const saveTodo = await TodoService.updateTodo(todoData.userId, id, { title: newTitle })
+    const saveTodo = await TodoService.updateTodo(todoData.userId, todoId, { title: newTitle })
     expect(saveTodo.id).toBeDefined()
     expect(saveTodo.title).toBe(newTitle)
-    await TodoService.deleteTodo(todoData.userId, id)
+
+    await TodoService.deleteTodo(todoData.userId, todoId)
   })
   test('getOne', async () => {
     const todo = await TodoService.createTodo(todoData.userId, todoData)
-    const id = todo.id
-    const saveTodo = await TodoService.getOneTodo(todoData.userId, id)
+    const todoId = todo.id
+    const saveTodo = await TodoService.getOneTodo(todoData.userId, todoId)
     expect(saveTodo.id).toBeDefined()
     expect(saveTodo.title).toBe(todoData.title)
+
+    await TodoService.deleteTodo(todoData.userId, todoId)
   })
   test('getAll', async () => {
+    const todo = await TodoService.createTodo(todoData.userId, todoData)
+    const todoId = todo.id
     const todos = await TodoService.getAllTodos(todoData.userId)
-    expect.arrayContaining(todos.rows)
+    expect.arrayContaining(todos)
+
+    await TodoService.deleteTodo(todoData.userId, todoId)
   })
   test('delete', async () => {
     const todo = await TodoService.createTodo(todoData.userId, todoData)
-    const id = todo.id
-    const deletedTodo = await TodoService.deleteTodo(todoData.userId, id)
+    const todoId = todo.id
+    const deletedTodo = await TodoService.deleteTodo(todoData.userId, todoId)
     expect(deletedTodo).toBe(1)
   })
 })
