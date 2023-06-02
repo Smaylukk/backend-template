@@ -7,7 +7,7 @@
 * * /api/user/refresh - оновлення accessToken
 * Rest-API для задач ToDo-list
 * * post /api/todo - створення
-* * get /api/todo - отримання колекції записів. Підтримує параметри limit(25) та page(1)
+* * get /api/todo - отримання колекції записів
 * * get /api/todo/:id - отримання 1 запису по ідентифікатору
 * * put /api/todo/:id - оновлення 1 запису по ідентифікатору
 * * delete /api/todo/:id - видалення 1 запису по ідентифікатору
