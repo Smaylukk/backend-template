@@ -1,7 +1,7 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common'
 import { InjectRedis, Redis } from '@nestjs-modules/ioredis'
 import * as bcrypt from 'bcrypt'
-import { JwtServ } from './jwt/jwtServ.service'
+import { JwtServ, UserPaylod } from './jwt/jwtServ.service'
 import { UserService } from '../user/user.service'
 
 @Injectable()
@@ -15,7 +15,7 @@ export class AuthService {
   async registration(email: string, name: string, password: string) {
     const user = await this.userService.createUser({ email, name, password })
 
-    const payload = {
+    const payload: UserPaylod = {
       id: user.id,
       email,
       name,
@@ -36,7 +36,7 @@ export class AuthService {
       throw new HttpException('Email чи пароль користувача неправильний', HttpStatus.BAD_REQUEST)
     }
 
-    const payload = {
+    const payload: UserPaylod = {
       id: user.id,
       email: user.email,
       name: user.name,

@@ -16,7 +16,7 @@ export class AuthGuard implements CanActivate {
       throw new HttpException('Користувач не авторизований - токен пустий', HttpStatus.UNAUTHORIZED)
     }
 
-    request.body.user = this.jwtService.verifyToken(token)
+    request.user = this.jwtService.verifyToken(token)
     return true
   }
 }
