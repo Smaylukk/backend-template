@@ -102,7 +102,7 @@ TodoModel.init(
   },
 )
 
-UserModel.hasMany(TodoModel, { foreignKey: 'userId' })
-TodoModel.belongsTo(UserModel, { foreignKey: 'userId' })
+UserModel.hasMany(TodoModel, { foreignKey: 'userId', as: 'todos' })
+TodoModel.belongsTo(UserModel, { foreignKey: 'userId', as: 'user' })
 
 export { UserModel, TodoModel }

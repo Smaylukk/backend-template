@@ -1,20 +1,46 @@
-import { Router } from 'express'
-import { body } from 'express-validator'
+import { FastifyInstance } from 'fastify'
+import authPlugin from '../plugins/authPlugin'
 import todoController from '../controllers/todoController'
+import { todoPostSchema } from '../schema/todoSchema'
 
-const router = Router()
-
-router.post(
-  '/',
-  [
-    body('title').notEmpty().withMessage('Title is required'),
-    body('userId').notEmpty().withMessage('userId is required'),
-  ],
-  todoController.create,
-)
-router.put('/:id', todoController.update)
-router.get('/', todoController.getAll)
-router.get('/:id', todoController.getOne)
-router.delete('/:id', todoController.delete)
-
-export default router
+export default async function todoRouter(fastify: FastifyInstance) {
+  fastify.post(
+    '/',
+    {
+      schema: {
+        body: todoPostSchema,
+      },
+      attachValidation: true,
+      preHandler: authPlugin,
+    },
+    todoController.create,
+  )
+  fastify.put(
+    '/:id',
+    {
+      preHandler: authPlugin,
+    },
+    todoController.update,
+  )
+  fastify.get(
+    '/',
+    {
+      preHandler: authPlugin,
+    },
+    todoController.getAll,
+  )
+  fastify.get(
+    '/:id',
+    {
+      preHandler: authPlugin,
+    },
+    todoController.getOne,
+  )
+  fastify.delete(
+    '/:id',
+    {
+      preHandler: authPlugin,
+    },
+    todoController.delete,
+  )
+}

@@ -6,8 +6,9 @@ class TodoRepository {
     return TodoModel.findAll({
       include: {
         model: UserModel,
+        as: 'user',
         attributes: {
-          exclude: ['password', 'createdAt', 'updatedAt'],
+          exclude: ['password', 'createdAt', 'updatedAt', 'id'],
         },
       },
       order: [['createdAt', 'desc']],
@@ -23,8 +24,9 @@ class TodoRepository {
       include: [
         {
           model: UserModel,
+          as: 'user',
           attributes: {
-            exclude: ['password', 'createdAt', 'updatedAt'],
+            exclude: ['password', 'createdAt', 'updatedAt', 'id'],
           },
         },
       ],

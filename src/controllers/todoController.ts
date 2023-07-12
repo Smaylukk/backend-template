@@ -1,82 +1,64 @@
-import { NextFunction, Request, Response } from 'express'
+import { FastifyReply } from 'fastify'
 import ApiError from '../errors/ApiError'
 import TodoService from '../services/todoService'
 import { checkValidationError } from '../validation/validation'
+import { IUserRequest, TodoPayload } from '../interfaces'
+import { TodoDTO } from '../models/dto/TodoDTO'
 
 class TodoController {
-  async getAll(req: Request, res: Response, next: NextFunction) {
+  async getAll(request: IUserRequest, res: FastifyReply) {
     try {
-      const todos = await TodoService.getAllTodos(req.body.user.id)
+      const todos = await TodoService.getAllTodos(request.user.id)
 
-      return res.status(200).json(todos)
+      res.status(200).send(todos)
     } catch (error) {
-      const mes = error.message + error.messages.join(', ')
-      next(ApiError.badRequestError(mes))
+      console.log(error)
+      throw ApiError.badRequestError(error.message)
     }
   }
 
-  async getOne(req: Request, res: Response, next: NextFunction) {
+  async getOne(request: IUserRequest<never, { id: number }>, res: FastifyReply) {
     try {
-      const { id } = req.params
-      let numId = 0
-      try {
-        numId = parseInt(id, 10)
-      } catch (e) {
-        next(ApiError.badRequestError('Param id must be number'))
-      }
-      const todo = await TodoService.getOneTodo(req.body.user.id, numId)
+      const { id } = request.params
+      const todo = await TodoService.getOneTodo(request.user.id, id)
 
-      return res.status(200).json(todo)
+      res.status(200).send(todo)
     } catch (error) {
-      next(ApiError.badRequestError(error.message))
+      throw ApiError.badRequestError(error.message)
     }
   }
 
-  async create(req: Request, res: Response, next: NextFunction) {
+  async create(request: IUserRequest<TodoPayload, { id: number }>, res: FastifyReply) {
     try {
-      checkValidationError(req)
+      checkValidationError(request)
 
-      const { body } = req
-      const todo = await TodoService.createTodo(req.body.user.id, body)
-      return res.status(200).json(todo)
+      const { body } = request
+      const todo = await TodoService.createTodo(request.user.id, new TodoDTO(body))
+      return res.status(200).send(todo)
     } catch (error) {
-      next(ApiError.badRequestError(error.message))
+      throw ApiError.badRequestError(error.message)
     }
   }
 
-  async update(req: Request, res: Response, next: NextFunction) {
+  async update(request: IUserRequest<TodoPayload, { id: number }>, res: FastifyReply) {
     try {
-      checkValidationError(req)
+      checkValidationError(request)
 
-      const { id } = req.params
-      let numId = 0
-      try {
-        numId = parseInt(id, 10)
-      } catch (e) {
-        next(ApiError.badRequestError('Param id must be number'))
-      }
-      const { body } = req
-      const todo = await TodoService.updateTodo(req.body.user.id, numId, body)
-      return res.status(200).json(todo)
+      const { body } = request
+      const todo = await TodoService.updateTodo(request.user.id, request.params.id, body)
+      return res.status(200).send(todo)
     } catch (error) {
-      next(ApiError.badRequestError(error.message))
+      throw ApiError.badRequestError(error.message)
     }
   }
 
-  async delete(req: Request, res: Response, next: NextFunction) {
+  async delete(request: IUserRequest<never, { id: number }>, res: FastifyReply) {
     try {
-      const { id } = req.params
-      let numId = 0
-      try {
-        numId = parseInt(id, 10)
-      } catch (e) {
-        next(ApiError.badRequestError('Param id must be number'))
-      }
-      const todo = await TodoService.deleteTodo(req.body.user.id, numId)
+      const todo = await TodoService.deleteTodo(request.user.id, request.params.id)
 
-      return res.status(200).json(todo)
+      return res.status(200).send(todo)
     } catch (error) {
-      next(ApiError.badRequestError(error.message))
+      throw ApiError.badRequestError(error.message)
     }
   }
 }

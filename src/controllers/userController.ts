@@ -1,57 +1,60 @@
-import { NextFunction, Request, Response } from 'express'
+import { FastifyRequest, FastifyReply } from 'fastify'
 import ApiError from '../errors/ApiError'
-import { checkValidationError } from '../validation/validation'
 import { IUserDTO } from '../models/dto/UserDTO'
 import AuthService from '../services/authService'
+import { IUserRequest, LoginPayload, RegistrationPayload } from '../interfaces'
+import { checkValidationError } from '../validation/validation'
 
 class UserController {
-  async registration(req: Request, res: Response, next: NextFunction): Promise<Response> {
+  async registration(request: FastifyRequest<{ Body: RegistrationPayload }>, res: FastifyReply) {
     try {
-      checkValidationError(req)
+      checkValidationError(request)
 
-      const { email, name, password } = req.body
+      const { email, name, password } = request.body
       const tokens = await AuthService.registration(email, name, password)
-      return res.status(200).json(tokens)
-    } catch (error) {
-      const mes = !(error.message + error.errors) ? '' : error.errors.map((item) => JSON.stringify(item)).join(', ')
-      next(ApiError.badRequestError(mes))
-    }
-  }
-
-  async login(req: Request, res: Response, next: NextFunction): Promise<Response> {
-    try {
-      checkValidationError(req)
-
-      const { email, password } = req.body
-      const tokens = await AuthService.login(email, password)
-      return res.status(200).json(tokens)
+      res.status(200).send(tokens)
     } catch (error) {
       console.log(error)
-      next(ApiError.badRequestError(error.message))
+      throw ApiError.badRequestError(error.message)
     }
   }
 
-  async check(req: Request, res: Response, next: NextFunction): Promise<Response> {
+  async login(request: FastifyRequest<{ Body: LoginPayload }>, res: FastifyReply) {
     try {
-      checkValidationError(req)
+      checkValidationError(request)
 
-      const user = req.body.user as IUserDTO
+      const { email, password } = request.body
+      const tokens = await AuthService.login(email, password)
+      res.status(200).send(tokens)
+    } catch (error) {
+      console.log(error)
+      throw ApiError.badRequestError(error.message)
+    }
+  }
+
+  async check(request: IUserRequest, res: FastifyReply) {
+    try {
+      checkValidationError(request)
+
+      const user = request.user as IUserDTO
       const accessToken = await AuthService.check(user)
-      return res.status(200).json({ accessToken })
+      res.status(200).send({ accessToken })
     } catch (error) {
-      next(ApiError.badRequestError(error.message))
+      console.log(error)
+      throw ApiError.badRequestError(error.message)
     }
   }
 
-  async refresh(req: Request, res: Response, next: NextFunction): Promise<Response> {
+  async refresh(request: FastifyRequest<{ Body: { refreshToken: string } }>, res: FastifyReply) {
     try {
-      checkValidationError(req)
+      checkValidationError(request)
 
-      const { refreshToken } = req.body
+      const { refreshToken } = request.body
       const accessToken = await AuthService.refreshAccessToken(refreshToken)
-      return res.status(200).json({ accessToken })
+      res.status(200).send({ accessToken })
     } catch (error) {
-      next(ApiError.badRequestError(error.message))
+      console.log(error)
+      throw ApiError.badRequestError(error.message)
     }
   }
 }

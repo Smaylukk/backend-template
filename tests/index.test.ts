@@ -1,11 +1,11 @@
 import supertest from 'supertest'
-import { server } from '../src'
+import { app } from '../src'
 import { TodoDTO } from '../src/models/dto/TodoDTO'
 import UserService from '../src/repositories/userRepository'
 
 process.env.NODE_ENV = 'test'
 
-const api = supertest(server)
+const api = supertest(app.server)
 const todoData = new TodoDTO({
   title: 'tests todo',
   userId: 1,
@@ -13,7 +13,7 @@ const todoData = new TodoDTO({
 let token
 
 afterAll(async () => {
-  server.close()
+  app.close()
 })
 describe('Test Auth API', () => {
   test('Login error', async () => {
