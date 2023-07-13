@@ -1,4 +1,5 @@
 import express, { Express } from 'express'
+import Hapi from '@hapi/hapi'
 import * as dotenv from 'dotenv'
 import cors from 'cors'
 import * as http from 'http'
@@ -22,7 +23,9 @@ app
   .use(router)
   .use('/static', express.static('static'))
   .use(errorMiddleware)
-export const server = http.createServer(app)
+export const server = Hapi.server({
+  port,
+})
 
 const start = async () => {
   await sequelize.authenticate()
@@ -37,7 +40,8 @@ const start = async () => {
       throw reason
     })
 
-  server.listen(port, () => console.log(`Server start on port ${port}!`))
+  await server.start()
+  console.log(`Server start on port ${port}!`)
 }
 
 start().catch((error) => {
