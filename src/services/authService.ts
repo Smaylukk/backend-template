@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt'
 import Redis from 'ioredis'
-import { UserDTO } from '../models/dto/UserDTO'
+import { IUserDTO, UserDTO } from '../models/dto/UserDTO'
 import jwtService from './jwtService'
 import ApiError from '../errors/ApiError'
 import UserRepository from '../repositories/userRepository'
@@ -43,7 +43,7 @@ class AuthService {
     return tokens
   }
 
-  async check(user) {
+  async check(user: IUserDTO) {
     const payload = {
       id: user.id,
       email: user.email,
@@ -52,7 +52,7 @@ class AuthService {
     return jwtService.generateAccessToken(payload)
   }
 
-  async refreshAccessToken(refreshToken) {
+  async refreshAccessToken(refreshToken: string) {
     const data = await this.redis.get(refreshToken)
     if (!data) {
       throw ApiError.unauthorizedError('Користувач не авторизований')

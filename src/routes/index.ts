@@ -1,14 +1,15 @@
-import { Router } from 'express'
-import userRouter from './userRouter'
-import todoRouter from './todoRouter'
-import authMiddleware from '../middlewares/authMiddleware'
+import { ServerRoute, ReqRefDefaults } from '@hapi/hapi'
+import * as userRouter from './userRouter'
+import * as todoRouter from './todoRouter'
 
-const router = Router()
-
-router.use('/api/user', userRouter)
-router.use('/api/todo', authMiddleware, todoRouter)
-router.get('/', (req, res) => {
-  res.status(200).send('It work!')
-})
-
-export default router
+export const routes: ServerRoute<ReqRefDefaults>[] = [
+  userRouter.userLogin,
+  userRouter.userRegister,
+  userRouter.userCheckToken,
+  userRouter.userRefreshToken,
+  todoRouter.todoCreate,
+  todoRouter.todoUpdate,
+  todoRouter.todoGetAll,
+  todoRouter.todoGetOne,
+  todoRouter.todoDelete,
+]

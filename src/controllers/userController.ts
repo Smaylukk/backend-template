@@ -1,57 +1,70 @@
-import { NextFunction, Request, Response } from 'express'
-import ApiError from '../errors/ApiError'
-import { checkValidationError } from '../validation/validation'
+import { Request, ResponseToolkit, ResponseObject } from 'hapi'
+import boom from '@hapi/boom'
 import { IUserDTO } from '../models/dto/UserDTO'
 import AuthService from '../services/authService'
+import {
+  LoginPayload,
+  RefreshPayload,
+  RegistrationPayload,
+} from '../interfaces'
 
 class UserController {
-  async registration(req: Request, res: Response, next: NextFunction): Promise<Response> {
+  async registration(
+    req: Request,
+    h: ResponseToolkit,
+  ): Promise<ResponseObject> {
     try {
-      checkValidationError(req)
-
-      const { email, name, password } = req.body
+      const { email, name, password } = req.payload as RegistrationPayload
       const tokens = await AuthService.registration(email, name, password)
-      return res.status(200).json(tokens)
-    } catch (error) {
-      const mes = !(error.message + error.errors) ? '' : error.errors.map((item) => JSON.stringify(item)).join(', ')
-      next(ApiError.badRequestError(mes))
-    }
-  }
-
-  async login(req: Request, res: Response, next: NextFunction): Promise<Response> {
-    try {
-      checkValidationError(req)
-
-      const { email, password } = req.body
-      const tokens = await AuthService.login(email, password)
-      return res.status(200).json(tokens)
+      return h.response(tokens).code(200)
     } catch (error) {
       console.log(error)
-      next(ApiError.badRequestError(error.message))
+      const boomError = boom.badRequest(error.message)
+      return h
+        .response(boomError.output.payload)
+        .code(boomError.output.statusCode)
     }
   }
 
-  async check(req: Request, res: Response, next: NextFunction): Promise<Response> {
+  async login(req: Request, h: ResponseToolkit): Promise<ResponseObject> {
     try {
-      checkValidationError(req)
+      const { email, password } = req.payload as LoginPayload
+      const tokens = await AuthService.login(email, password)
+      return h.response(tokens).code(200)
+    } catch (error) {
+      console.log(error)
+      const boomError = boom.badRequest(error.message)
+      return h
+        .response(boomError.output.payload)
+        .code(boomError.output.statusCode)
+    }
+  }
 
-      const user = req.body.user as IUserDTO
+  async check(req: Request, h: ResponseToolkit): Promise<ResponseObject> {
+    try {
+      const user = req.auth.credentials as IUserDTO
       const accessToken = await AuthService.check(user)
-      return res.status(200).json({ accessToken })
+      return h.response({ accessToken }).code(200)
     } catch (error) {
-      next(ApiError.badRequestError(error.message))
+      console.log(error)
+      const boomError = boom.badRequest(error.message)
+      return h
+        .response(boomError.output.payload)
+        .code(boomError.output.statusCode)
     }
   }
 
-  async refresh(req: Request, res: Response, next: NextFunction): Promise<Response> {
+  async refresh(req: Request, h: ResponseToolkit): Promise<ResponseObject> {
     try {
-      checkValidationError(req)
-
-      const { refreshToken } = req.body
+      const { refreshToken } = req.payload as RefreshPayload
       const accessToken = await AuthService.refreshAccessToken(refreshToken)
-      return res.status(200).json({ accessToken })
+      return h.response({ accessToken }).code(200)
     } catch (error) {
-      next(ApiError.badRequestError(error.message))
+      console.log(error)
+      const boomError = boom.badRequest(error.message)
+      return h
+        .response(boomError.output.payload)
+        .code(boomError.output.statusCode)
     }
   }
 }

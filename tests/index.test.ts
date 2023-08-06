@@ -2,109 +2,200 @@ import supertest from 'supertest'
 import { server } from '../src'
 import { TodoDTO } from '../src/models/dto/TodoDTO'
 import UserService from '../src/repositories/userRepository'
+import { log } from 'console'
+import exp from 'constants'
 
 process.env.NODE_ENV = 'test'
 
 const api = supertest(server)
-const todoData = new TodoDTO({
+const todoData = {
   title: 'tests todo',
-  userId: 1,
-})
-let token
+}
+let token = ''
 
-afterAll(async () => {
-  server.close()
+beforeAll((done) => {
+  server.events.on('start', () => {
+    done()
+  })
+})
+afterAll((done) => {
+  server.events.on('stop', () => {
+    done()
+  })
+
+  server.stop()
 })
 describe('Test Auth API', () => {
   test('Login error', async () => {
-    await api.post('/api/user/login').send({ email: 'error', password: 'error' }).expect(400)
+    const data = await server.inject({
+      method: 'POST',
+      url: '/api/user/login',
+      payload: { email: 'error', password: 'error' },
+    })
+    expect(data.statusCode).toBe(400)
   })
   test('Login', async () => {
-    const res = await api.post('/api/user/login').send({ email: 'admin@mail.com', password: 'admin' }).expect(200)
-    expect(res.body).toHaveProperty('accessToken')
-    expect(res.body).toHaveProperty('refreshToken')
+    const data = await server.inject({
+      method: 'POST',
+      url: '/api/user/login',
+      payload: { email: 'admin@mail.com', password: 'admin' },
+    })
+    expect(data.statusCode).toBe(200)
+    expect(data.result).toHaveProperty('accessToken')
+    expect(data.result).toHaveProperty('refreshToken')
   })
   test('Registration', async () => {
-    const res = await api
-      .post('/api/user/reg')
-      .send({ email: 'tests@tests.com', name: 'test', password: 'test' })
-      .expect(200)
-    expect(res.body).toHaveProperty('accessToken')
-    expect(res.body).toHaveProperty('refreshToken')
+    const data = await server.inject({
+      method: 'POST',
+      url: '/api/user/reg',
+      payload: { email: 'tests@tests.com', name: 'test', password: 'test' },
+    })
+    expect(data.statusCode).toBe(200)
+    expect(data.result).toHaveProperty('accessToken')
+    expect(data.result).toHaveProperty('refreshToken')
 
     await UserService.deleteUserByEmail('tests@tests.com')
   })
   test('Check', async () => {
-    const tokens = await api
-      .post('/api/user/login')
-      .send({ email: 'admin@mail.com', password: 'admin' })
-      .then((res) => res.body)
+    const { result: tokens } = await server.inject<{ accessToken: string; refreshToken: string }>({
+      method: 'POST',
+      url: '/api/user/login',
+      payload: { email: 'admin@mail.com', password: 'admin' },
+    })
 
-    const res = await api.get('/api/user/auth').auth(tokens.accessToken, { type: 'bearer' }).expect(200)
-    expect(res.body).toHaveProperty('accessToken')
+    const res = await server.inject({
+      method: 'GET',
+      url: '/api/user/auth',
+      headers: {
+        authorization: 'Bearer ' + tokens?.accessToken,
+      },
+    })
+    expect(res.result).toHaveProperty('accessToken')
   })
   test('Refresh', async () => {
-    const tokens = await api
-      .post('/api/user/login')
-      .send({ email: 'admin@mail.com', password: 'admin' })
-      .then((res) => res.body)
+    const { result: tokens } = await server.inject<{ accessToken: string; refreshToken: string }>({
+      method: 'POST',
+      url: '/api/user/login',
+      payload: { email: 'admin@mail.com', password: 'admin' },
+    })
 
-    const res = await api.post('/api/user/refresh').send({ refreshToken: tokens.refreshToken }).expect(200)
-    expect(res.body).toHaveProperty('accessToken')
+    const res = await server.inject<{ accessToken: string }>({
+      method: 'POST',
+      url: '/api/user/refresh',
+      payload: { refreshToken: tokens?.refreshToken },
+    })
+    expect(res.result).toHaveProperty('accessToken')
   })
 })
 
 describe('Test todo API', () => {
   beforeAll(async () => {
-    const response = await api.post('/api/user/login').send({ email: 'admin@mail.com', password: 'admin' })
-    token = response.body.accessToken
+    const { result } = await server.inject<{ accessToken: string; refreshToken: string }>({
+      method: 'POST',
+      url: '/api/user/login',
+      payload: { email: 'admin@mail.com', password: 'admin' },
+    })
+    expect(result).toBeDefined()
+    if (result) {
+      token = result.accessToken
+    }
   })
 
   let todoId
 
   test('todo api - POST', async () => {
-    const res = await api.post('/api/todo').auth(token, { type: 'bearer' }).send(todoData)
+    const res = await server.inject<{ id: number; title: string; userId: number }>({
+      method: 'POST',
+      url: '/api/todo',
+      headers: {
+        authorization: 'Bearer ' + token,
+      },
+      payload: todoData,
+    })
 
-    todoId = res.body.id
-    expect(res.status).toBe(200)
-    expect(res.headers['content-type']).toMatch('application/json')
-    expect(res.body.title).toBe(todoData.title)
-    expect(res.body.userId).toBe(todoData.userId)
+    expect(res.result).toBeDefined()
+    if (res.result) {
+      todoId = res.result?.id
+      expect(res.statusCode).toBe(200)
+      expect(res.headers['content-type']).toMatch('application/json')
+      expect(res.result.title).toBe(todoData.title)
+    }
   })
   test('todo api - GET all', async () => {
-    const res = await api.get('/api/todo').auth(token, { type: 'bearer' })
+    const res = await server.inject<any[]>({
+      method: 'GET',
+      url: '/api/todo',
+      headers: {
+        authorization: 'Bearer ' + token,
+      },
+    })
 
-    expect(res.status).toBe(200)
-    expect(res.headers['content-type']).toMatch('application/json')
-    expect.arrayContaining(res.body)
+    expect(res.result).toBeDefined()
+    if (res.result) {
+      expect(res.statusCode).toBe(200)
+      expect(res.headers['content-type']).toMatch('application/json')
+      expect.arrayContaining(res.result)
+    }
   })
 
   test('todo api - GET one', async () => {
-    const res = await api.get('/api/todo/' + todoId).auth(token, { type: 'bearer' })
+    const res = await server.inject<any[]>({
+      method: 'GET',
+      url: `/api/todo/${todoId}`,
+      headers: {
+        authorization: 'Bearer ' + token,
+      },
+    })
 
-    expect(res.status).toBe(200)
-    expect(res.headers['content-type']).toMatch('application/json')
+    expect(res.result).toBeDefined()
+    if (res.result) {
+      expect(res.statusCode).toBe(200)
+      expect(res.headers['content-type']).toMatch('application/json')
+    }
   })
 
   test('todo api - PUT', async () => {
-    const res = await api.put(`/api/todo/${todoId}`).auth(token, { type: 'bearer' }).send({
-      title: 'new body',
+    const res = await server.inject<{ id: number; title: string; userId: number }>({
+      method: 'PUT',
+      url: `/api/todo/${todoId}`,
+      headers: {
+        authorization: 'Bearer ' + token,
+      },
+      payload: {
+        title: 'new body',
+      },
     })
 
-    expect(res.status).toBe(200)
-    expect(res.headers['content-type']).toMatch('application/json')
-    expect(res.body.title).toBe('new body')
+    expect(res.result).toBeDefined()
+    if (res.result) {
+      expect(res.statusCode).toBe(200)
+      expect(res.headers['content-type']).toMatch('application/json')
+      expect(res.result.title).toBe('new body')
+    }
   })
 
   test('todo api - DELETE', async () => {
-    const res = await api.delete(`/api/todo/${todoId}`).auth(token, { type: 'bearer' })
+    const res = await server.inject<{ id: number; title: string; userId: number }>({
+      method: 'DELETE',
+      url: `/api/todo/${todoId}`,
+      headers: {
+        authorization: 'Bearer ' + token,
+      },
+    })
 
-    expect(res.status).toBe(200)
+    expect(res.statusCode).toBe(200)
   })
 
   test('todo api - POST with error', async () => {
-    const res = await api.post('/api/todo').auth(token, { type: 'bearer' }).send({})
+    const res = await server.inject<{ id: number; title: string; userId: number }>({
+      method: 'POST',
+      url: '/api/todo',
+      headers: {
+        authorization: 'Bearer ' + token,
+      },
+      payload: {},
+    })
 
-    expect(res.status).toBe(400)
+    expect(res.statusCode).toBe(400)
   })
 })

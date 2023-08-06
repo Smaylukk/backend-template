@@ -19,6 +19,7 @@ afterAll(async () => {
 
 describe('Test User service', () => {
   let userId = 0
+  
 
   test('createUser', async () => {
     const user = await UserService.createUser(userData)
@@ -33,8 +34,8 @@ describe('Test User service', () => {
     const user = await UserService.createUser(userData)
     userId = user.id
     const saveUser = await UserService.getOneUser(userId)
-    expect(saveUser.email).toBe(userData.email)
-    expect(saveUser.name).toBe(userData.name)
+    expect(saveUser?.email).toBe(userData.email)
+    expect(saveUser?.name).toBe(userData.name)
     expect(user.password).toBeDefined()
     await UserService.deleteUser(userId)
   })

@@ -1,20 +1,54 @@
-import { Router } from 'express'
-import { body } from 'express-validator'
+import { ServerRoute } from '@hapi/hapi'
 import todoController from '../controllers/todoController'
+import { todoPostSchema } from '../schema/todoSchema'
+import validation from '../validation/validation'
 
-const router = Router()
-
-router.post(
-  '/',
-  [
-    body('title').notEmpty().withMessage('Title is required'),
-    body('userId').notEmpty().withMessage('userId is required'),
-  ],
-  todoController.create,
-)
-router.put('/:id', todoController.update)
-router.get('/', todoController.getAll)
-router.get('/:id', todoController.getOne)
-router.delete('/:id', todoController.delete)
-
-export default router
+export const todoCreate: ServerRoute = {
+  method: 'POST',
+  path: '/api/todo',
+  handler: todoController.create,
+  options: {
+    description: 'create todo',
+    validate: {
+      payload: todoPostSchema,
+      failAction: validation,
+    },
+    auth: 'jwt',
+  },
+}
+export const todoUpdate: ServerRoute = {
+  method: 'PUT',
+  path: '/api/todo/{id}',
+  handler: todoController.update,
+  options: {
+    description: 'update todo',
+    auth: 'jwt',
+  },
+}
+export const todoGetAll: ServerRoute = {
+  method: 'GET',
+  path: '/api/todo',
+  handler: todoController.getAll,
+  options: {
+    description: 'get all todo',
+    auth: 'jwt',
+  },
+}
+export const todoGetOne: ServerRoute = {
+  method: 'GET',
+  path: '/api/todo/{id}',
+  handler: todoController.getOne,
+  options: {
+    description: 'get one todo',
+    auth: 'jwt',
+  },
+}
+export const todoDelete: ServerRoute = {
+  method: 'DELETE',
+  path: '/api/todo/{id}',
+  handler: todoController.delete,
+  options: {
+    description: 'delete todo',
+    auth: 'jwt',
+  },
+}

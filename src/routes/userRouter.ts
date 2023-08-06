@@ -1,31 +1,43 @@
-import { Router } from 'express'
-import { body } from 'express-validator'
+import { ServerRoute } from '@hapi/hapi'
 import userController from '../controllers/userController'
-import authMiddleware from '../middlewares/authMiddleware'
+import { userLoginSchema, userRegisterSchema } from '../schema/userSchema'
+import validation from '../validation/validation'
 
-const router = Router()
-
-router.post(
-  '/reg',
-  [
-    body('email').notEmpty().withMessage('Email обовязковий').isEmail()
-      .withMessage('Email має бути email-формат'),
-    body('name').notEmpty().withMessage('Найменування обовязкове'),
-    body('password')
-      .notEmpty()
-      .withMessage('Пароль обовязковий')
-      .isLength({ min: 4 })
-      .withMessage('Довжина паролю від 4 символів'),
-  ],
-  userController.registration,
-)
-router.post(
-  '/login',
-  // eslint-disable-next-line newline-per-chained-call
-  [body('email').notEmpty().withMessage('Email is required').isEmail().withMessage('Email must be in email-format')],
-  userController.login,
-)
-router.get('/auth', authMiddleware, userController.check)
-router.post('/refresh', userController.refresh)
-
-export default router
+export const userRegister: ServerRoute = {
+  method: 'POST',
+  path: '/api/user/reg',
+  handler: userController.registration,
+  options: {
+    description: 'register user',
+    validate: {
+      payload: userRegisterSchema,
+      failAction: validation,
+    },
+  },
+}
+export const userLogin: ServerRoute = {
+  method: 'POST',
+  path: '/api/user/login',
+  handler: userController.login,
+  options: {
+    description: 'login user',
+    validate: {
+      payload: userLoginSchema,
+      failAction: validation,
+    },
+  },
+}
+export const userCheckToken: ServerRoute = {
+  method: 'GET',
+  path: '/api/user/auth',
+  handler: userController.check,
+  options: {
+    description: 'check auth token',
+    auth: 'jwt',
+  },
+}
+export const userRefreshToken: ServerRoute = {
+  method: 'POST',
+  path: '/api/user/refresh',
+  handler: userController.refresh,
+}

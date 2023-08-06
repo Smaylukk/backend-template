@@ -1,13 +1,11 @@
-import express, { Express } from 'express'
 import Hapi from '@hapi/hapi'
+import * as HapiJwt from 'hapi-auth-jwt2'
 import * as dotenv from 'dotenv'
-import cors from 'cors'
-import * as http from 'http'
 import * as console from 'console'
-import router from './routes/index'
-import errorMiddleware from './middlewares/errorMiddleware'
+import { routes } from './routes'
 import sequelize from './services/db'
 import { StartService } from './services/startService'
+import { validateUser } from './plugins/auth'
 
 const test = process.env.NODE_ENV === 'test'
 const envFile = process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : '.env'
@@ -15,16 +13,11 @@ dotenv.config({ path: envFile })
 
 const port = process.env.PORT || 5005
 
-const app: Express = express()
-// prettier-ignore
-app
-  .use(cors())
-  .use(express.json())
-  .use(router)
-  .use('/static', express.static('static'))
-  .use(errorMiddleware)
-export const server = Hapi.server({
+export const server: Hapi.Server<Hapi.ServerApplicationState> = Hapi.server({
   port,
+  routes: {
+    cors: true,
+  },
 })
 
 const start = async () => {
@@ -39,6 +32,19 @@ const start = async () => {
     .catch((reason) => {
       throw reason
     })
+
+  await server.register([
+    {
+      plugin: HapiJwt,
+    },
+  ])
+
+  server.auth.strategy('jwt', 'jwt', {
+    key: process.env.JWT_ACCESS_SECRET,
+    validate: validateUser,
+  })
+
+  server.route(routes)
 
   await server.start()
   console.log(`Server start on port ${port}!`)

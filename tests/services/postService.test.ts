@@ -30,8 +30,8 @@ describe('Test Todo service', () => {
     const todoId = todo.id
     const newTitle = 'New title'
     const saveTodo = await TodoService.updateTodo(todoData.userId, todoId, { title: newTitle })
-    expect(saveTodo.id).toBeDefined()
-    expect(saveTodo.title).toBe(newTitle)
+    expect(saveTodo?.id).toBeDefined()
+    expect(saveTodo?.title).toBe(newTitle)
 
     await TodoService.deleteTodo(todoData.userId, todoId)
   })
@@ -39,8 +39,8 @@ describe('Test Todo service', () => {
     const todo = await TodoService.createTodo(todoData.userId, todoData)
     const todoId = todo.id
     const saveTodo = await TodoService.getOneTodo(todoData.userId, todoId)
-    expect(saveTodo.id).toBeDefined()
-    expect(saveTodo.title).toBe(todoData.title)
+    expect(saveTodo?.id).toBeDefined()
+    expect(saveTodo?.title).toBe(todoData.title)
 
     await TodoService.deleteTodo(todoData.userId, todoId)
   })
