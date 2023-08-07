@@ -8,7 +8,8 @@
     "start": "ts-node src/index.ts",
     "build": "rimraf dist && tsc",
     "lint": "eslint . --fix",
-    "test": "cross-env NODE_ENV=test yarn build && yarn jest --forceExit"
+    "test": "cross-env NODE_ENV=test yarn build && yarn jest --forceExit",
+    "preinstall": "rm -rf node_modules/"
   },
   "keywords": [],
   "author": "",
