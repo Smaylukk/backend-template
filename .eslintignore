@@ -1,10 +1,11 @@
-/node_modules
-/.idea
+node_modules/
+.idea/
+.vscode/
 *.lock
 .eslintignore
 .gitignore
 .prettierignore
 README.md
 *.json
-/dist
-/coverage
+dist/
+coverage/
