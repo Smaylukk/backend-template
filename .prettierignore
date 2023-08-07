@@ -1,9 +1,9 @@
 node_modules/
 .idea/
+.vscode/
 *.lock
 .eslintignore
 .gitignore
 .prettierignore
 dist/
-
-/coverage/
+coverage/

@@ -1,6 +1,7 @@
 node_modules/
 tests/
 .idea/
+.vscode/
 *.lock
 .eslintignore
 .gitignore
@@ -8,4 +9,4 @@ tests/
 README.md
 *.json
 dist/
-/coverage/
+coverage/
