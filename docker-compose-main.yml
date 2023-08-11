@@ -27,11 +27,11 @@ services:
   redis:
     container_name: redis_backend
     image: redis:alpine
+    expose:
+      - '6379'
     ports:
-      - "6379:6379"
+      - '6379:6379'
     restart: always
-    networks:
-      - app-network
 
 networks:
   app-network:
