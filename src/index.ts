@@ -3,11 +3,10 @@ import * as HapiJwt from 'hapi-auth-jwt2'
 import * as dotenv from 'dotenv'
 import * as console from 'console'
 import { routes } from './routes'
-import sequelize from './services/db'
-import { StartService } from './services/startService'
 import { validateUser } from './plugins/auth'
+import { connectDb } from './db/dbConnector'
 
-const test = process.env.NODE_ENV === 'test'
+const isTest = process.env.NODE_ENV === 'test'
 const envFile = process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : '.env'
 dotenv.config({ path: envFile })
 
@@ -21,17 +20,7 @@ export const server: Hapi.Server<Hapi.ServerApplicationState> = Hapi.server({
 })
 
 const start = async () => {
-  await sequelize.authenticate()
-  sequelize
-    .sync({ force: false, logging: !test && console.log })
-    .then(async () => {
-      if (!test) {
-        await new StartService().initValue()
-      }
-    })
-    .catch((reason) => {
-      throw reason
-    })
+  await connectDb(isTest)
 
   await server.register([
     {
