@@ -11,8 +11,8 @@ class UserController {
       ctx.status = 200
       ctx.body = tokens
     } catch (error) {
-      const mes = !error.errors ? error.message : error.errors.map((item) => JSON.stringify(item)).join(', ')
-      throw ApiError.badRequestError(mes)
+      console.log(error.message)
+      throw ApiError.badRequestError(error.message)
     }
   }
 
@@ -23,9 +23,8 @@ class UserController {
       ctx.status = 200
       ctx.body = tokens
     } catch (error) {
-      console.log(error)
-      const mes = !error.errors ? error.message : error.errors.map((item) => JSON.stringify(item)).join(', ')
-      throw ApiError.badRequestError(mes)
+      console.log(error.message)
+      throw ApiError.badRequestError(error.message)
     }
   }
 
@@ -36,8 +35,8 @@ class UserController {
       ctx.status = 200
       ctx.body = { accessToken }
     } catch (error) {
-      const mes = !error.errors ? error.message : error.errors.map((item) => JSON.stringify(item)).join(', ')
-      throw ApiError.badRequestError(mes)
+      console.log(error.message)
+      throw ApiError.badRequestError(error.message)
     }
   }
 
@@ -48,8 +47,8 @@ class UserController {
       ctx.status = 200
       ctx.body = { accessToken }
     } catch (error) {
-      const mes = !error.errors ? error.message : error.errors.map((item) => JSON.stringify(item)).join(', ')
-      throw ApiError.badRequestError(mes)
+      console.log(error.message)
+      throw ApiError.badRequestError(error.message)
     }
   }
 }
