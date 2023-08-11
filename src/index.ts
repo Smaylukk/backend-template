@@ -1,17 +1,10 @@
 import express, { Express } from 'express'
-import * as dotenv from 'dotenv'
 import cors from 'cors'
 import * as http from 'http'
-import * as console from 'console'
+import { ServerConfig } from './services/config'
 import router from './routes/index'
 import errorMiddleware from './middlewares/errorMiddleware'
-import { connectDb } from './db/dbConnector'
-
-const isTest = process.env.NODE_ENV === 'test'
-const envFile = process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : '.env'
-dotenv.config({ path: envFile })
-
-const port = process.env.PORT || 5005
+import { connectDb } from './services/dbConnector'
 
 const app: Express = express()
 // prettier-ignore
@@ -24,9 +17,9 @@ app
 export const server = http.createServer(app)
 
 const start = async () => {
-  await connectDb(isTest)
+  await connectDb(ServerConfig.isTest)
 
-  server.listen(port, () => console.log(`Server start on port ${port}!`))
+  server.listen(ServerConfig.port, () => console.log(`Server start on port ${ServerConfig.port}!`))
 }
 
 start().catch((error) => {

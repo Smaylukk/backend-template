@@ -1,5 +1,5 @@
-import sequelize from '../services/db'
-import { StartService } from '../services/startService'
+import sequelize from './db'
+import { StartService } from './startService'
 
 const connectDb = async (isTest: boolean) => {
   await sequelize.authenticate()

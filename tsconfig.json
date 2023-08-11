@@ -8,7 +8,6 @@
     "moduleResolution": "node",
     "sourceMap": false,
     "outDir": "dist",
-    "rootDir": "src",
     "baseUrl": ".",
     "allowUnusedLabels": false,
     "paths": {
@@ -18,6 +17,10 @@
       "ES2015"
     ]
   },
-  "include": ["src/**/*"],
-  "exclude": ["tests/**/*"]
+  "include": ["src"],
+  "exclude": [
+    "tests",
+    "node_modules",
+    "dist"
+  ]
 }
