@@ -9,7 +9,7 @@
     "build": "rimraf dist && tsc",
     "lint": "eslint . --fix",
     "test": "cross-env NODE_ENV=test yarn build && yarn jest --forceExit",
-    "pre:install": "rm -rf node_modules/"
+    "pre:install": "rm -rf node_modules/ && yarn"
   },
   "keywords": [],
   "author": "",
