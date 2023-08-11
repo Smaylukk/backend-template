@@ -1,8 +1,9 @@
 import jwt from 'jsonwebtoken'
+import { JWTConfig } from './config'
 
 class JWTService {
   generateAccessToken(payload) {
-    const secret = process.env.JWT_ACCESS_SECRET
+    const secret = JWTConfig.jwtAccessSecret
 
     return jwt.sign(payload, secret, {
       expiresIn: '15m',
@@ -10,18 +11,18 @@ class JWTService {
   }
 
   generateRefreshToken(payload) {
-    const secret = process.env.JWT_REFRESH_SECRET
+    const secret = JWTConfig.jwtRefreshSecret
 
     return jwt.sign(payload, secret, {})
   }
 
   verifyToken(token: string) {
-    const secret = process.env.JWT_ACCESS_SECRET
+    const secret = JWTConfig.jwtAccessSecret
     return jwt.verify(token, secret)
   }
 
   verifyRefreshToken(token: string) {
-    const secret = process.env.JWT_REFRESH_SECRET
+    const secret = JWTConfig.jwtRefreshSecret
     return jwt.verify(token, secret)
   }
 
