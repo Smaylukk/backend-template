@@ -9,7 +9,8 @@
     "build": "rimraf dist && tsc",
     "lint": "eslint . --fix",
     "test": "cross-env NODE_ENV=test yarn build && yarn jest --forceExit",
-    "preinstall": "rm -rf node_modules/"
+    "pre:install": "rm -rf node_modules/",
+    "full:install": "rm -rf node_modules/ && yarn"
   },
   "keywords": [],
   "author": "",
@@ -19,7 +20,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
-    "express-validator": "^6.14.3",
+    "express-validator": "^7.0.1",
     "ioredis": "^5.3.1",
     "jsonwebtoken": "^9.0.0",
     "pg": "^8.10.0",
