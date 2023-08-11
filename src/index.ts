@@ -3,13 +3,12 @@ import JoiCompiler from 'joi-compiler'
 import * as dotenv from 'dotenv'
 import * as console from 'console'
 import cors from '@fastify/cors'
-import sequelize from './services/db'
-import { StartService } from './services/startService'
 import userRouter from './routes/userRouter'
 import errorHandler from './plugins/errorHandler'
 import todoRouter from './routes/todoRouter'
+import { connectDb } from './db/dbConnector'
 
-const test = process.env.NODE_ENV === 'test'
+const isTest = process.env.NODE_ENV === 'test'
 const envFile = process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : '.env'
 dotenv.config({ path: envFile })
 
@@ -38,17 +37,7 @@ const start = async () => {
   app.get('/', (req, res) => {
     res.status(200).send('It work!')
   })
-  await sequelize.authenticate()
-  sequelize
-    .sync({ force: false, logging: !test && console.log })
-    .then(async () => {
-      if (!test) {
-        await new StartService().initValue()
-      }
-    })
-    .catch((reason) => {
-      throw reason
-    })
+  await connectDb(isTest)
 
   app.listen({ port })
 }
