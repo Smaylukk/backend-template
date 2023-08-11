@@ -1,18 +1,12 @@
 import Fastify, { FastifyInstance } from 'fastify'
 import JoiCompiler from 'joi-compiler'
-import * as dotenv from 'dotenv'
-import * as console from 'console'
 import cors from '@fastify/cors'
+import { ServerConfig } from './services/config'
 import userRouter from './routes/userRouter'
 import errorHandler from './plugins/errorHandler'
 import todoRouter from './routes/todoRouter'
 import { connectDb } from './db/dbConnector'
 
-const isTest = process.env.NODE_ENV === 'test'
-const envFile = process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : '.env'
-dotenv.config({ path: envFile })
-
-const port = parseInt(process.env.PORT, 10) || 5005
 const factory = JoiCompiler()
 export const app: FastifyInstance = Fastify({
   logger: true,
@@ -37,9 +31,9 @@ const start = async () => {
   app.get('/', (req, res) => {
     res.status(200).send('It work!')
   })
-  await connectDb(isTest)
+  await connectDb(ServerConfig.isTest)
 
-  app.listen({ port })
+  app.listen({ port: ServerConfig.port })
 }
 
 start().catch((error) => {
