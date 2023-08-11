@@ -9,6 +9,10 @@ class AuthService {
   redis = new Redis()
 
   async registration(email: string, name: string, password: string) {
+    const existUser = await UserRepository.getOneUserByEmail(email)
+    if (existUser) {
+      throw ApiError.badRequestError(`Користувач з email ${email} вже зареєстрований`)
+    }
     const userDTO = new UserDTO({ email, name, password })
     const user = await UserRepository.createUser(userDTO)
 

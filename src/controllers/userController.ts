@@ -13,8 +13,8 @@ class UserController {
       const tokens = await AuthService.registration(email, name, password)
       return res.status(200).json(tokens)
     } catch (error) {
-      const mes = !(error.message + error.errors) ? '' : error.errors.map((item) => JSON.stringify(item)).join(', ')
-      next(ApiError.badRequestError(mes))
+      console.log(error)
+      next(ApiError.badRequestError(error.message))
     }
   }
 
