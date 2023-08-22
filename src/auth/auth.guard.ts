@@ -1,4 +1,11 @@
-import { CanActivate, ExecutionContext, Injectable, HttpException, HttpStatus } from '@nestjs/common'
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  HttpException,
+  HttpStatus,
+  UnauthorizedException,
+} from '@nestjs/common'
 import { Observable } from 'rxjs'
 import { JwtServ } from './jwt/jwtServ.service'
 
@@ -16,7 +23,12 @@ export class AuthGuard implements CanActivate {
       throw new HttpException('Користувач не авторизований - токен пустий', HttpStatus.UNAUTHORIZED)
     }
 
-    request.user = this.jwtService.verifyToken(token)
+    try {
+      request.user = this.jwtService.verifyToken(token)
+    } catch (e) {
+      throw new UnauthorizedException(e)
+    }
+
     return true
   }
 }

@@ -1,23 +1,33 @@
 import { Module } from '@nestjs/common'
-import { ConfigModule } from '@nestjs/config'
+import { ConfigModule, ConfigService } from '@nestjs/config'
 import { SequelizeModule } from '@nestjs/sequelize'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { UserModule } from './user/user.module'
 import { AuthModule } from './auth/auth.module'
-import { TodoModule } from './todo/todo.module';
+import { TodoModule } from './todo/todo.module'
+import { config } from './config/config'
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ envFilePath: process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : '.env' }),
-    SequelizeModule.forRoot({
-      dialect: 'postgres',
-      host: process.env.DB_HOST,
-      port: parseInt(process.env.DB_PORT, 10),
-      database: process.env.DB_NAME,
-      username: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      autoLoadModels: true,
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [config],
+    }),
+    SequelizeModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => {
+        return {
+          dialect: 'postgres',
+          host: configService.get('DatabaseConfig.dbHost'),
+          port: configService.get<number>('DatabaseConfig.dbPort'),
+          database: configService.get('DatabaseConfig.dbName'),
+          username: configService.get('DatabaseConfig.dbUser'),
+          password: configService.get('DatabaseConfig.dbPassword'),
+          autoLoadModels: true,
+        }
+      },
+      inject: [ConfigService],
     }),
     UserModule,
     AuthModule,

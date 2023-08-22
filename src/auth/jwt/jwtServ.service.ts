@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
 import { JwtService } from '@nestjs/jwt'
 
 export interface UserPaylod {
@@ -8,27 +9,27 @@ export interface UserPaylod {
 }
 @Injectable()
 export class JwtServ {
-  constructor(private readonly jwtService: JwtService) {}
+  constructor(private readonly jwtService: JwtService, private readonly configService: ConfigService) {}
 
   generateAccessToken(payload: UserPaylod) {
-    const secret = process.env.JWT_ACCESS_SECRET
+    const secret = this.configService.get('JWTConfig.jwtAccessSecret')
 
     return this.jwtService.sign(payload, { secret, expiresIn: '15m' })
   }
 
   generateRefreshToken(payload: UserPaylod) {
-    const secret = process.env.JWT_REFRESH_SECRET
+    const secret = this.configService.get('JWTConfig.jwtRefreshSecret')
 
     return this.jwtService.sign(payload, { secret })
   }
 
   verifyToken(token: string) {
-    const secret = process.env.JWT_ACCESS_SECRET
+    const secret = this.configService.get('JWTConfig.jwtAccessSecret')
     return this.jwtService.verify<UserPaylod>(token, { secret })
   }
 
   verifyRefreshToken(token: string) {
-    const secret = process.env.JWT_REFRESH_SECRET
+    const secret = this.configService.get('JWTConfig.jwtRefreshSecret')
     return this.jwtService.verify<UserPaylod>(token, { secret })
   }
 
