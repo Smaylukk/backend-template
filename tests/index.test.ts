@@ -1,17 +1,22 @@
 import supertest from 'supertest'
-import { app } from '../src'
 import { TodoDTO } from '../src/models/dto/TodoDTO'
 import UserService from '../src/repositories/userRepository'
+import { buildApp } from '../src/app'
+import { FastifyInstance } from 'fastify'
 
-process.env.NODE_ENV = 'test'
-
-const api = supertest(app.server)
+let app: FastifyInstance
+let api
 const todoData = new TodoDTO({
   title: 'tests todo',
   userId: 1,
 })
 let token
 
+beforeAll(async () => {
+  app = await buildApp()
+  await app.ready()
+  api = supertest(app.server)
+})
 afterAll(async () => {
   app.close()
 })
