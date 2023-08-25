@@ -4,12 +4,12 @@ import { IUserDTO, UserDTO } from '../models/dto/UserDTO'
 import jwtService from './jwtService'
 import ApiError from '../errors/ApiError'
 import UserRepository from '../repositories/userRepository'
-import { RedisConfig } from './config'
+import { RedisConfig } from '../config/config'
 
 class AuthService {
   redis = new Redis({
     host: RedisConfig.redisHost,
-    port: parseInt(RedisConfig.redisPort, 10),
+    port: RedisConfig.redisPort,
   })
 
   async registration(email: string, name: string, password: string) {
