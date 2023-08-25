@@ -5,7 +5,7 @@ import errorHandler from './plugins/errorHandler'
 import userRouter from './routes/userRouter'
 import todoRouter from './routes/todoRouter'
 import { connectDb } from './db/dbConnector'
-import { ServerConfig } from './services/config'
+import { ServerConfig } from './config/config'
 
 async function buildApp() {
   const factory = JoiCompiler()
