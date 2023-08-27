@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken'
-import { JWTConfig } from './config'
+import { JWTConfig } from '../config/config'
 
 class JWTService {
   generateAccessToken(payload) {

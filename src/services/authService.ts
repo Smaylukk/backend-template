@@ -1,15 +1,15 @@
 import bcrypt from 'bcrypt'
 import Redis from 'ioredis'
-import { UserDTO } from '../models/dto/UserDTO'
+import { IUserDTO, UserDTO } from '../models/dto/UserDTO'
 import jwtService from './jwtService'
 import ApiError from '../errors/ApiError'
 import UserRepository from '../repositories/userRepository'
-import { RedisConfig } from './config'
+import { RedisConfig } from '../config/config'
 
 class AuthService {
   redis = new Redis({
     host: RedisConfig.redisHost,
-    port: parseInt(RedisConfig.redisPort, 10),
+    port: RedisConfig.redisPort,
   })
 
   async registration(email: string, name: string, password: string) {
@@ -47,7 +47,7 @@ class AuthService {
     return tokens
   }
 
-  async check(user) {
+  async check(user: IUserDTO) {
     const payload = {
       id: user.id,
       email: user.email,
@@ -56,7 +56,7 @@ class AuthService {
     return jwtService.generateAccessToken(payload)
   }
 
-  async refreshAccessToken(refreshToken) {
+  async refreshAccessToken(refreshToken: string) {
     const data = await this.redis.get(refreshToken)
     if (!data) {
       throw ApiError.unauthorizedError('Користувач не авторизований')
