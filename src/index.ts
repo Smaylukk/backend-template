@@ -1,6 +1,6 @@
 import Hapi from '@hapi/hapi'
 import * as HapiJwt from 'hapi-auth-jwt2'
-import { JWTConfig, ServerConfig } from './services/config'
+import { JWTConfig, ServerConfig } from './config/config'
 import { routes } from './routes'
 import { validateUser } from './plugins/auth'
 import { connectDb } from './services/dbConnector'

@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken'
-import { JWTConfig } from './config'
+import { JWTConfig } from '../config/config'
 
 class JWTService {
   generateAccessToken(payload) {
@@ -27,7 +27,10 @@ class JWTService {
   }
 
   createTokensPair(payload) {
-    return { accessToken: this.generateAccessToken(payload), refreshToken: this.generateRefreshToken(payload) }
+    return {
+      accessToken: this.generateAccessToken(payload),
+      refreshToken: this.generateRefreshToken(payload),
+    }
   }
 }
 
