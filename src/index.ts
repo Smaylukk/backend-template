@@ -1,7 +1,7 @@
 import express, { Express } from 'express'
 import cors from 'cors'
 import * as http from 'http'
-import { ServerConfig } from './services/config'
+import { ServerConfig } from './config/config'
 import router from './routes/index'
 import errorMiddleware from './middlewares/errorMiddleware'
 import { connectDb } from './services/dbConnector'

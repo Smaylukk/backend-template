@@ -2,11 +2,11 @@ import { ITodoDTO } from '../models/dto/TodoDTO'
 import TodoRepository from '../repositories/todoRepository'
 
 class TodoService {
-  async getAllTodos(userId) {
+  async getAllTodos(userId: number) {
     return TodoRepository.getAll(userId)
   }
 
-  async getOneTodo(userId, id: number) {
+  async getOneTodo(userId: number, id: number) {
     return TodoRepository.getOne(userId, id)
   }
 

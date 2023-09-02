@@ -1,5 +1,5 @@
 import { Sequelize } from 'sequelize'
-import { DatabaseConfig } from './config'
+import { DatabaseConfig } from '../config/config'
 
 let dialectOptions = {}
 if (DatabaseConfig.dbSSL === '1') {
@@ -19,7 +19,7 @@ const sequelize = new Sequelize(
   {
     dialect: 'mysql',
     host: DatabaseConfig.dbHost,
-    port: parseInt(DatabaseConfig.dbPort, 10),
+    port: DatabaseConfig.dbPort,
     dialectOptions,
   },
 )
