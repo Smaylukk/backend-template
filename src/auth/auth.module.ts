@@ -9,16 +9,7 @@ import { AuthGuard } from './auth.guard'
 import { ConfigModule } from '@nestjs/config'
 
 @Module({
-  imports: [
-    UserModule,
-    JwtModule.register({}),
-    RedisModule.forRoot({
-      config: {
-        url: '',
-      },
-    }),
-    ConfigModule,
-  ],
+  imports: [UserModule, JwtModule.register({}), ConfigModule, RedisModule],
   controllers: [AuthController],
   providers: [AuthService, JwtServ, AuthGuard],
   exports: [AuthGuard, JwtServ],

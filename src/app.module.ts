@@ -7,6 +7,7 @@ import { UserModule } from './user/user.module'
 import { AuthModule } from './auth/auth.module'
 import { TodoModule } from './todo/todo.module'
 import { config } from './config/config'
+import { RedisModule } from '@nestjs-modules/ioredis'
 
 @Module({
   imports: [
@@ -18,13 +19,25 @@ import { config } from './config/config'
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => {
         return {
-          dialect: 'postgres',
+          dialect: 'mysql',
           host: configService.get('DatabaseConfig.dbHost'),
           port: configService.get<number>('DatabaseConfig.dbPort'),
           database: configService.get('DatabaseConfig.dbName'),
           username: configService.get('DatabaseConfig.dbUser'),
           password: configService.get('DatabaseConfig.dbPassword'),
           autoLoadModels: true,
+        }
+      },
+      inject: [ConfigService],
+    }),
+    RedisModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => {
+        return {
+          config: {
+            url: configService.get('RedisConfig.redisHost'),
+            port: configService.get('RedisConfig.redisPort'),
+          },
         }
       },
       inject: [ConfigService],

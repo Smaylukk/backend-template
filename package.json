@@ -17,7 +17,8 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "pre:install": "rm -rf node_modules/ && yarn"
+    "pre:install": "rm -rf node_modules/",
+    "full:install": "rm -rf node_modules/ && yarn"
   },
   "dependencies": {
     "@nestjs-modules/ioredis": "^1.0.1",
@@ -31,8 +32,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
     "ioredis": "^5.3.2",
-    "pg": "^8.10.0",
-    "pg-hstore": "^2.3.4",
+    "mysql2": "^3.6.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0",
     "sequelize": "^6.31.0",
