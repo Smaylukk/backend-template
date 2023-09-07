@@ -1,26 +1,22 @@
 version: "3.9"
 services:
-  postgres:
-    container_name: pg_backend
-    image: postgres:13.3
+  mysql:
+    image: mysql:5.7
+    restart: always
     environment:
-      POSTGRES_DB: "postgresdb"
-      POSTGRES_USER: "postgres"
-      POSTGRES_PASSWORD: "postgres"
+      MYSQL_DATABASE: 'mysqldb'
+      # So you don't have to use root, but you can if you like
+      MYSQL_USER: 'user_mysql'
+      # You can use whatever password you like
+      MYSQL_PASSWORD: 'password_mysql'
+      # Password for root access
+      MYSQL_ROOT_PASSWORD: 'password_mysql'
     ports:
-      - "5432:5432"
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d postgresdb"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 10s
-    restart: unless-stopped
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 4G
+      # <Port exposed> : <MySQL Port running inside container>
+      - '3306:3306'
+    expose:
+      # Opens port 3306 on the container
+      - '3306'
     networks:
       - app-network
 
