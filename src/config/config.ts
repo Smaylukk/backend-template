@@ -20,6 +20,6 @@ export const config = (): IConfig => ({
   },
   RedisConfig: {
     redisHost: process.env.REDIS_HOST,
-    redisPort: process.env.REDIS_PORT,
+    redisPort: +process.env.REDIS_PORT,
   },
 })

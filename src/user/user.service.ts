@@ -1,51 +1,43 @@
 import { Injectable } from '@nestjs/common'
-import { InjectModel } from '@nestjs/sequelize'
 import * as bcrypt from 'bcrypt'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
-import { User } from './models/user.model'
+import { UserRepository } from './user.repository'
 
 @Injectable()
 export class UserService {
-  constructor(
-    @InjectModel(User)
-    private readonly userModel: typeof User,
-  ) {}
+  constructor(private readonly userRepository: UserRepository) {}
 
   async createUser(user: CreateUserDto) {
-    const candidate = await this.userModel.findOne({ where: { email: user.email } })
+    const candidate = await this.userRepository.findByEmail(user.email)
     if (candidate) {
       throw new Error(`User with email ${user.email} created`)
     }
     user.password = bcrypt.hashSync(user.password, 5)
-    return this.userModel.create({ ...user })
+    return this.userRepository.create({ ...user })
   }
 
-  getAll() {
-    return this.userModel.findAll()
+  async getAll() {
+    return this.userRepository.findAll()
   }
 
-  getOne(id: number) {
-    return this.userModel.findByPk(id)
+  async getOne(id: number) {
+    return this.userRepository.findById(id)
   }
 
-  getOneUserByEmail(email: string) {
-    return this.userModel.findOne({ where: { email } })
+  async getOneUserByEmail(email: string) {
+    return this.userRepository.findByEmail(email)
   }
 
   async updateUser(id: number, updateUser: UpdateUserDto) {
-    const user = await this.userModel.findByPk(id)
-    if (user) {
-      await user.update(updateUser)
-    }
-    return user
+    return this.userRepository.update(id, updateUser)
   }
 
-  deleteUser(id: number) {
-    return this.userModel.destroy({ where: { id } })
+  async deleteUser(id: number) {
+    return this.userRepository.delete(id)
   }
 
-  deleteUserByEmail(email: string) {
-    return this.userModel.destroy({ where: { email } })
+  async deleteUserByEmail(email: string) {
+    return this.userRepository.deleteByEmail(email)
   }
 }

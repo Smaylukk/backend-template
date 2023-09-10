@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { Todo } from './entities/todo.model'
+import { Todo } from './models/todo.model'
 import { InjectModel } from '@nestjs/sequelize'
 import { User } from '../user/models/user.model'
 
@@ -52,11 +52,12 @@ export class TodoRepository {
     return null
   }
 
-  async update(id: number, userId: number, todo: Partial<Todo>): Promise<[number, Todo[]]> {
-    return this.todoModel.update(todo, {
-      where: { id, userId },
-      returning: true,
-    })
+  async update(id: number, userId: number, updateTodo: Partial<Todo>): Promise<Todo> {
+    const todo = await this.findById(id, userId)
+    if (todo) {
+      await todo.update(updateTodo)
+    }
+    return todo
   }
 
   async delete(id: number, userId: number): Promise<number> {

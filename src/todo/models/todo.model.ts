@@ -20,7 +20,7 @@ export class Todo extends Model {
 
   @ForeignKey(() => User)
   @Column({
-    type: DataType.UUID,
+    type: DataType.INTEGER,
     allowNull: false,
   })
   userId: number

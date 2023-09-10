@@ -16,7 +16,7 @@ import { CreateTodoDto } from './dto/create-todo.dto'
 import { UpdateTodoDto } from './dto/update-todo.dto'
 import { AuthGuard } from '../auth/auth.guard'
 import { UserPaylod } from '../auth/jwt/jwtServ.service'
-import { User } from '../auth/user.decorator'
+import { UserDecorator } from '../auth/user.decorator'
 
 @Controller('api/todo')
 export class TodoController {
@@ -24,13 +24,13 @@ export class TodoController {
 
   @Post()
   @UseGuards(AuthGuard)
-  create(@Body() createTodoDto: CreateTodoDto, @User() user: UserPaylod) {
+  create(@Body() createTodoDto: CreateTodoDto, @UserDecorator() user: UserPaylod) {
     return this.todoService.create(user.id, createTodoDto)
   }
 
   @Get()
   @UseGuards(AuthGuard)
-  findAll(@Query('limit') limit, @Query('page') page, @User() user: UserPaylod) {
+  findAll(@Query('limit') limit, @Query('page') page, @UserDecorator() user: UserPaylod) {
     try {
       return this.todoService.findAll(user.id, limit, page)
     } catch (error) {
@@ -41,19 +41,19 @@ export class TodoController {
 
   @Get(':id')
   @UseGuards(AuthGuard)
-  findOne(@Param('id') id: string, @User() user: UserPaylod) {
+  findOne(@Param('id') id: string, @UserDecorator() user: UserPaylod) {
     return this.todoService.findOne(user.id, +id)
   }
 
   @Put(':id')
   @UseGuards(AuthGuard)
-  update(@Param('id') id: string, @Body() updateTodoDto: UpdateTodoDto, @User() user: UserPaylod) {
+  update(@Param('id') id: string, @Body() updateTodoDto: UpdateTodoDto, @UserDecorator() user: UserPaylod) {
     return this.todoService.update(user.id, +id, updateTodoDto)
   }
 
   @Delete(':id')
   @UseGuards(AuthGuard)
-  remove(@Param('id') id: string, @User() user: UserPaylod) {
+  remove(@Param('id') id: string, @UserDecorator() user: UserPaylod) {
     return this.todoService.remove(user.id, +id)
   }
 }

@@ -19,7 +19,7 @@ interface IJWTConfig {
 
 interface IRedisConfig {
   redisHost: string
-  redisPort: string
+  redisPort: number
 }
 export interface IConfig {
   ServerConfig: IServerConfig
