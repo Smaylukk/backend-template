@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module'
 import { TodoModule } from './todo/todo.module'
 import { config } from './config/config'
 import { RedisModule } from '@nestjs-modules/ioredis'
+import { StartModule } from './utils/start/start.module'
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { RedisModule } from '@nestjs-modules/ioredis'
           username: configService.get('DatabaseConfig.dbUser'),
           password: configService.get('DatabaseConfig.dbPassword'),
           autoLoadModels: true,
+          synchronize: true,
         }
       },
       inject: [ConfigService],
@@ -45,6 +47,7 @@ import { RedisModule } from '@nestjs-modules/ioredis'
     UserModule,
     AuthModule,
     TodoModule,
+    StartModule,
   ],
   controllers: [AppController],
   providers: [AppService],

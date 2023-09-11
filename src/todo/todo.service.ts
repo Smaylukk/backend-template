@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { CreateTodoDto } from './dto/create-todo.dto'
 import { UpdateTodoDto } from './dto/update-todo.dto'
-import { Todo } from './entities/todo.model'
+import { Todo } from './models/todo.model'
 import { TodoRepository } from './todo.repository'
 
 @Injectable()
@@ -22,7 +22,7 @@ export class TodoService {
     return this.todoRepository.findById(id, userId)
   }
 
-  update(userId: number, id: number, updateTodo: UpdateTodoDto): Promise<[number, Todo[]]> {
+  update(userId: number, id: number, updateTodo: UpdateTodoDto): Promise<Todo> {
     return this.todoRepository.update(id, userId, updateTodo)
   }
 

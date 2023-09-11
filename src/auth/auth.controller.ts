@@ -1,7 +1,7 @@
 import { Body, Controller, Get, HttpCode, HttpException, HttpStatus, Post, UseGuards } from '@nestjs/common'
 import { AuthService } from './auth.service'
 import { AuthGuard } from './auth.guard'
-import { User } from './user.decorator'
+import { UserDecorator } from './user.decorator'
 import { UserPaylod } from './jwt/jwtServ.service'
 import { CreateUserDto } from '../user/dto/create-user.dto'
 
@@ -41,7 +41,7 @@ export class AuthController {
   @Get('auth')
   @HttpCode(200)
   @UseGuards(AuthGuard)
-  async check(@User() user: UserPaylod) {
+  async check(@UserDecorator() user: UserPaylod) {
     try {
       // checkValidationError(req)
 
