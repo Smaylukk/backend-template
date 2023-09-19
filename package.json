@@ -9,7 +9,8 @@
     "build": "rimraf dist && tsc",
     "lint": "eslint . --fix",
     "test": "cross-env NODE_ENV=test yarn build && yarn jest --forceExit",
-    "pre:install": "rm -rf node_modules/"
+    "pre:install": "rm -rf node_modules/",
+    "full:install": "rm -rf node_modules/ && yarn"
   },
   "keywords": [],
   "author": "",
@@ -24,8 +25,7 @@
     "joi": "^17.9.2",
     "joi-compiler": "^1.1.0",
     "jsonwebtoken": "^9.0.0",
-    "pg": "^8.10.0",
-    "pg-hstore": "^2.3.4",
+    "mariadb": "^3.2.1",
     "sequelize": "^6.29.3"
   },
   "devDependencies": {

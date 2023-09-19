@@ -1,26 +1,15 @@
 version: "3.9"
 services:
-  postgres:
-    container_name: postgres_container
-    image: postgres:13.3
+  maria:
+    container_name: maria_backend
+    image: mariadb
     environment:
-      POSTGRES_DB: "postgresdb"
-      POSTGRES_USER: "postgres"
-      POSTGRES_PASSWORD: "postgres"
+      MYSQL_ROOT_PASSWORD: maria_pass
+      MYSQL_DATABASE: mariadb
+      MYSQL_USER: maria_user
+      MYSQL_PASSWORD: maria_pass
     ports:
-      - "5432:5432"
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d postgresdb"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 10s
-    restart: unless-stopped
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 4G
+      - "3306:3306"
     networks:
       - app-network
 
@@ -37,17 +26,18 @@ services:
   server:
     depends_on:
       - redis
+      - maria
     build:
       dockerfile: Dockerfile
       context: ./
     container_name: server
     environment:
       - PORT=5005
-      - DB_NAME=postgresdb
-      - DB_USER=postgres
-      - DB_PASSWORD=postgres
-      - DB_HOST=postgres
-      - DB_PORT=5432
+      - DB_NAME=mariadb
+      - DB_USER=maria_user
+      - DB_PASSWORD=maria_pass
+      - DB_HOST=maria
+      - DB_PORT=3306
       - DB_SSL=0
       - JWT_ACCESS_SECRET=uf78ef7berf
       - JWT_REFRESH_SECRET=d87fghdgfh

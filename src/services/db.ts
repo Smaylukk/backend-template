@@ -17,7 +17,7 @@ const sequelize = new Sequelize(
   DatabaseConfig.dbPassword,
 
   {
-    dialect: 'postgres',
+    dialect: 'mariadb',
     host: DatabaseConfig.dbHost,
     port: DatabaseConfig.dbPort,
     dialectOptions,
