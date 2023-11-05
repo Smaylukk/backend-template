@@ -1,4 +1,4 @@
-# ts-fastify-seq-pg-auth
+# ts-fastify-seq-mariadb-auth
 Додаток по-замовчуванню має:
 * Аутентифікація - реєстрація/авторизація під користувачами за допомогою jwt + Redis
 * * /api/user/reg - реєстрація
