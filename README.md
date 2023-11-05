@@ -1,4 +1,4 @@
-# ts-hapi-seq-pg-auth
+# ts-hapi-seq-mariadb-auth
 
 Додаток по-замовчуванню має:
 
