@@ -39,6 +39,7 @@ services:
     container_name: server
     environment:
       - PORT=5005
+      - HOST=0.0.0.0
       - DB_NAME=mysqldb
       - DB_USER=user_mysql
       - DB_PASSWORD=password_mysql

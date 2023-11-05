@@ -8,6 +8,7 @@ dotenv.config({ path: envFile })
 export const ServerConfig: IServerConfig = {
   isTest,
   port: +process.env.PORT || 5005,
+  host: process.env.HOST || '',
   nodeEnv: process.env.NODE_ENV,
 }
 
