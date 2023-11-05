@@ -20,7 +20,7 @@ import { StartModule } from './utils/start/start.module'
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => {
         return {
-          dialect: 'postgres',
+          dialect: 'mariadb',
           host: configService.get('DatabaseConfig.dbHost'),
           port: configService.get<number>('DatabaseConfig.dbPort'),
           database: configService.get('DatabaseConfig.dbName'),
