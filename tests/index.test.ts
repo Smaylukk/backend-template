@@ -5,12 +5,12 @@ import { buildApp } from '../src/app'
 import { FastifyInstance } from 'fastify'
 
 let app: FastifyInstance
-let api
+let api: supertest.SuperTest<supertest.Test>
 const todoData = new TodoDTO({
   title: 'tests todo',
   userId: 1,
 })
-let token
+let token: string
 
 beforeAll(async () => {
   app = await buildApp()
@@ -65,7 +65,7 @@ describe('Test todo API', () => {
     token = response.body.accessToken
   })
 
-  let todoId
+  let todoId: string
 
   test('todo api - POST', async () => {
     const res = await api.post('/api/todo').auth(token, { type: 'bearer' }).send(todoData)
