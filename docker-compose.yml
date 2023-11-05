@@ -43,6 +43,7 @@ services:
     container_name: server
     environment:
       - PORT=5005
+      - HOST=0.0.0.0
       - DB_NAME=postgresdb
       - DB_USER=postgres
       - DB_PASSWORD=postgres
