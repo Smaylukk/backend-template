@@ -1,6 +1,7 @@
 export interface IServerConfig {
   isTest: boolean
   port: number
+  host: string
   nodeEnv: string
 }
 

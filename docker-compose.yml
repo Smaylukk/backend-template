@@ -33,6 +33,7 @@ services:
     container_name: server
     environment:
       - PORT=5005
+      - HOST=0.0.0.0
       - DB_NAME=mariadb
       - DB_USER=maria_user
       - DB_PASSWORD=maria_pass

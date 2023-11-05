@@ -4,7 +4,7 @@ import { buildApp } from './app'
 const start = async () => {
   const app = await buildApp()
 
-  app.listen({ port: ServerConfig.port })
+  app.listen({ port: ServerConfig.port, host: ServerConfig.host })
 }
 
 start().catch((error) => {
