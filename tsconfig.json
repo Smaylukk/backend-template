@@ -11,13 +11,14 @@
     "baseUrl": ".",
     "allowUnusedLabels": false,
     "paths": {
-      "*": ["node_modules/*", "src/types/*"]
+      "*": ["node_modules/*", "types/*"]
     },
+    "typeRoots": ["node_modules/@types", "types"],
     "lib": [
       "ES2015"
     ]
   },
-  "include": ["src"],
+  "include": ["src", "types"],
   "exclude": [
     "tests",
     "node_modules",

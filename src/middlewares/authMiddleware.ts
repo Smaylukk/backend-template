@@ -10,27 +10,17 @@ export default (req: Request, res: Response, next: NextFunction) => {
   try {
     const { authorization } = req.headers
     if (!authorization || authorization.indexOf('Bearer') === -1) {
-      return next(
-        ApiError.unauthorizedError(
-          'Користувач не авторизований - відсутній токен',
-        ),
-      )
+      return next(ApiError.unauthorizedError('Користувач не авторизований - відсутній токен'))
     }
 
     const token = authorization.split(' ')[1]
     if (!token) {
-      return next(
-        ApiError.unauthorizedError(
-          'Користувач не авторизований - токен пустий',
-        ),
-      )
+      return next(ApiError.unauthorizedError('Користувач не авторизований - токен пустий'))
     }
 
-    req.body.user = jwtService.verifyToken(token)
+    req.session.user = jwtService.verifyToken(token)
     next()
   } catch (error) {
-    return next(
-      ApiError.unauthorizedError(`Помилка авторизації - ${error.message}`),
-    )
+    return next(ApiError.unauthorizedError(`Помилка авторизації - ${error.message}`))
   }
 }

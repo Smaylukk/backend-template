@@ -2,31 +2,36 @@
 import * as bcrypt from 'bcrypt'
 import { UserDTO } from '../models/dto/UserDTO'
 import { TodoDTO } from '../models/dto/TodoDTO'
-import { TodoModel, UserModel } from '../models/model'
+import UserRepository from '../repositories/userRepository'
+import TodoRepository from '../repositories/todoRepository'
 
 export class StartService {
   async initValue() {
     // create admin user
-    const users = await UserModel.findAll()
+    const createdUsers: string[] = []
+    const users = await UserRepository.getAllUsers()
     if (!users.length) {
       const adminData = new UserDTO({
         name: 'admin',
         email: 'admin@mail.com',
         password: bcrypt.hashSync('admin', 5),
       })
-      await UserModel.create(adminData)
+      const admin = await UserRepository.createUser(adminData)
+      createdUsers.push(admin.id)
       // prettier-ignore
       const newUsers = await fetch('https://jsonplaceholder.typicode.com/users')
         .then(async (response) => response.json())
 
       for (const rec of newUsers) {
         delete rec.id
+        rec.password = bcrypt.hashSync('password', 5)
         const userData = new UserDTO(rec)
-        await UserModel.create(userData)
+        const user = await UserRepository.createUser(userData)
+        createdUsers.push(user.id)
       }
 
       // create fake todo
-      const todos = await TodoModel.findAll()
+      const todos = await TodoRepository.getAllOfThem()
       if (todos.length === 0) {
         await fetch('https://jsonplaceholder.typicode.com/todos')
           .then(async (response) => response.json())
@@ -36,9 +41,9 @@ export class StartService {
               const todoData = new TodoDTO({
                 title: rec.title,
                 completed: rec.completed,
-                userId: rec.userId,
               })
-              await TodoModel.create(todoData)
+              const id = Math.floor(Math.random() * createdUsers.length)
+              await TodoRepository.create(createdUsers[id], todoData)
             }
           })
       }

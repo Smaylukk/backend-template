@@ -1,6 +1,7 @@
 import express, { Express } from 'express'
 import cors from 'cors'
 import * as http from 'http'
+import session from 'express-session'
 import { ServerConfig } from './config/config'
 import router from './routes/index'
 import errorMiddleware from './middlewares/errorMiddleware'
@@ -10,6 +11,12 @@ const app: Express = express()
 // prettier-ignore
 app
   .use(cors())
+  .use(session({
+    secret: 'your_secret_key',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false },
+  }))
   .use(express.json())
   .use(router)
   .use('/static', express.static('static'))

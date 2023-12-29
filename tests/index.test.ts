@@ -6,9 +6,9 @@ import UserService from '../src/repositories/userRepository'
 process.env.NODE_ENV = 'test'
 
 const api = supertest(server)
-const todoData = new TodoDTO({
+let todoData = new TodoDTO({
   title: 'tests todo',
-  userId: 1,
+  complete: false,
 })
 let token
 
@@ -69,7 +69,7 @@ describe('Test todo API', () => {
     expect(res.status).toBe(200)
     expect(res.headers['content-type']).toMatch('application/json')
     expect(res.body.title).toBe(todoData.title)
-    expect(res.body.userId).toBe(todoData.userId)
+    expect(res.body.user).toBeDefined()
   })
   test('todo api - GET all', async () => {
     const res = await api.get('/api/todo').auth(token, { type: 'bearer' })

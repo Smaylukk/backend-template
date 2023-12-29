@@ -5,12 +5,7 @@ export interface IServerConfig {
 }
 
 export interface IDatabaseConfig {
-  dbName: string
-  dbUser: string
-  dbPassword: string
-  dbHost: string
-  dbPort: number
-  dbSSL: string
+  mongoURL: string
 }
 
 export interface IJWTConfig {

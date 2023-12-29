@@ -35,7 +35,7 @@ class UserController {
     try {
       checkValidationError(req)
 
-      const user = req.body.user as IUserDTO
+      const user = req.session.user as IUserDTO
       const accessToken = await AuthService.check(user)
       return res.status(200).json({ accessToken })
     } catch (error) {

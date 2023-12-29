@@ -1,6 +1,6 @@
 import UserService from '../../src/repositories/userRepository'
-import sequelize from '../../src/services/db'
 import { UserDTO } from '../../src/models/dto/UserDTO'
+import { connectDb, disconnectDb } from '../../src/services/dbConnector'
 
 let userData = new UserDTO({
   email: 'user@tests.org',
@@ -9,16 +9,15 @@ let userData = new UserDTO({
 })
 
 beforeAll(async () => {
-  await sequelize.authenticate()
-  await sequelize.sync({ logging: false })
+  await connectDb(true)
 })
 
 afterAll(async () => {
-  await sequelize.close()
+  await disconnectDb()
 })
 
 describe('Test User service', () => {
-  let userId = 0
+  let userId = ''
 
   test('createUser', async () => {
     const user = await UserService.createUser(userData)
@@ -49,6 +48,6 @@ describe('Test User service', () => {
     const user = await UserService.createUser(userData)
     userId = user.id
     const deletedUser = await UserService.deleteUser(userId)
-    expect(deletedUser).toBe(1)
+    expect(deletedUser.id).toBe(userId)
   })
 })

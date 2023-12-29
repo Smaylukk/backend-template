@@ -2,13 +2,13 @@ export interface ITodoDTO {
   id?: number | null
   title: string
   completed: boolean
-  userId: number
+  user: string
 }
 
 export class TodoDTO implements ITodoDTO {
   title = ''
 
-  userId = 0
+  user = ''
 
   completed = false
 
