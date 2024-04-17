@@ -1,108 +1,53 @@
-import { DataTypes, Model } from 'sequelize'
-import sequelize from '../services/db'
+import * as mongoose from 'mongoose'
 
-export interface UserAttributes {
-  id: number
+// USER
+export interface UserDocument extends mongoose.Document {
   name: string
-  password: string
   email: string
+  password: string
 }
-class UserModel extends Model<UserAttributes> implements UserAttributes {
-  public id!: number
-
-  public name!: string
-
-  public password!: string
-
-  public email!: string
-
-  public readonly createdAt!: Date
-
-  public readonly updatedAt!: Date
-}
-UserModel.init(
-  {
-    // Здесь определяются атрибуты модели
-    id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
-      primaryKey: true,
-      unique: true,
-    },
-    email: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
-    },
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    password: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
+const userSchema = new mongoose.Schema<UserDocument>({
+  name: { type: String, required: true },
+  email: { type: String, required: true },
+  password: { type: String, required: true },
+})
+userSchema.set('toJSON', {
+  virtuals: true,
+  transform: (doc, ret) => {
+    // Перетворити _id в id
+    /* eslint-disable */
+    ret.id = ret._id
+    delete ret._id
+    /* eslint-enable */
+    return ret
   },
-  {
-    sequelize,
-    tableName: 'user',
-    timestamps: true,
-  },
-)
+})
 
-interface TodoAttributes {
-  id: number
+const UserModel = mongoose.model<UserDocument>('User', userSchema)
+
+// CAR
+export interface TodoDocument extends mongoose.Document {
   title: string
   completed: boolean
-  userId: number
+  user: mongoose.Schema.Types.ObjectId
 }
-class TodoModel extends Model<TodoAttributes> implements TodoAttributes {
-  public id!: number
-
-  public title!: string
-
-  public completed!: boolean
-
-  public userId!: number
-
-  public readonly createdAt!: Date
-
-  public readonly updatedAt!: Date
-}
-TodoModel.init(
-  {
-    // Здесь определяются атрибуты модели
-    id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
-      primaryKey: true,
-      unique: true,
-    },
-    title: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    completed: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false,
-    },
-    userId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: UserModel,
-        key: 'id',
-      },
-    },
+const todoSchema = new mongoose.Schema<TodoDocument>({
+  title: { type: String, required: true },
+  completed: { type: Boolean },
+  user: { type: mongoose.Types.ObjectId, ref: 'User', required: true },
+})
+todoSchema.set('toJSON', {
+  virtuals: true,
+  transform: (doc, ret) => {
+    // Перетворити _id в id
+    /* eslint-disable */
+    ret.id = ret._id
+    delete ret._id
+    /* eslint-enable */
+    return ret
   },
-  {
-    sequelize,
-    tableName: 'todo',
-    timestamps: true,
-  },
-)
+})
 
-UserModel.hasMany(TodoModel, { foreignKey: 'userId', as: 'todos' })
-TodoModel.belongsTo(UserModel, { foreignKey: 'userId', as: 'user' })
+const TodoModel = mongoose.model<TodoDocument>('Todo', todoSchema)
 
 export { UserModel, TodoModel }

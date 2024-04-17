@@ -25,9 +25,7 @@
     "joi": "^17.9.2",
     "joi-compiler": "^1.1.0",
     "jsonwebtoken": "^9.0.0",
-    "pg": "^8.10.0",
-    "pg-hstore": "^2.3.4",
-    "sequelize": "^6.34.0"
+    "mongoose": "^8.3.2"
   },
   "devDependencies": {
     "@types/jest": "^29.5.0",

@@ -17,7 +17,7 @@ class TodoController {
     }
   }
 
-  async getOne(request: IUserRequest<never, { id: number }>, res: FastifyReply) {
+  async getOne(request: IUserRequest<never, { id: string }>, res: FastifyReply) {
     try {
       const { id } = request.params
       const todo = await TodoService.getOneTodo(request.user.id, id)
@@ -28,7 +28,7 @@ class TodoController {
     }
   }
 
-  async create(request: IUserRequest<TodoPayload, { id: number }>, res: FastifyReply) {
+  async create(request: IUserRequest<TodoPayload, { id: string }>, res: FastifyReply) {
     try {
       checkValidationError(request)
 
@@ -40,7 +40,7 @@ class TodoController {
     }
   }
 
-  async update(request: IUserRequest<TodoPayload, { id: number }>, res: FastifyReply) {
+  async update(request: IUserRequest<TodoPayload, { id: string }>, res: FastifyReply) {
     try {
       checkValidationError(request)
 
@@ -52,7 +52,7 @@ class TodoController {
     }
   }
 
-  async delete(request: IUserRequest<never, { id: number }>, res: FastifyReply) {
+  async delete(request: IUserRequest<never, { id: string }>, res: FastifyReply) {
     try {
       const todo = await TodoService.deleteTodo(request.user.id, request.params.id)
 

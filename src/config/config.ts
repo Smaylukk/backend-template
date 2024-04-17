@@ -13,12 +13,7 @@ export const ServerConfig: IServerConfig = {
 }
 
 export const DatabaseConfig: IDatabaseConfig = {
-  dbName: process.env.DB_NAME,
-  dbUser: process.env.DB_USER,
-  dbPassword: process.env.DB_PASSWORD,
-  dbHost: process.env.DB_HOST,
-  dbPort: +process.env.DB_PORT,
-  dbSSL: process.env.DB_SSL,
+  mongoURL: process.env.MONGO_URL,
 }
 
 export const JWTConfig: IJWTConfig = {

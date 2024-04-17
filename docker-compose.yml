@@ -1,26 +1,12 @@
 version: "3.9"
 services:
-  postgres:
-    container_name: postgres_container
-    image: postgres:13.3
-    environment:
-      POSTGRES_DB: "postgresdb"
-      POSTGRES_USER: "postgres"
-      POSTGRES_PASSWORD: "postgres"
+  mongodb:
+    image: mongo:latest
+    container_name: my-mongo-db
+    restart: always
+    env_file: '.env.docker'
     ports:
-      - "5432:5432"
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d postgresdb"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 10s
-    restart: unless-stopped
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 4G
+      - '27017:27017'
     networks:
       - app-network
 
@@ -41,19 +27,7 @@ services:
       dockerfile: Dockerfile
       context: ./
     container_name: server
-    environment:
-      - PORT=5005
-      - HOST=0.0.0.0
-      - DB_NAME=postgresdb
-      - DB_USER=postgres
-      - DB_PASSWORD=postgres
-      - DB_HOST=postgres
-      - DB_PORT=5432
-      - DB_SSL=0
-      - JWT_ACCESS_SECRET=uf78ef7berf
-      - JWT_REFRESH_SECRET=d87fghdgfh
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
+    env_file: '.env'
     ports:
       - '5005:5005'
     expose:

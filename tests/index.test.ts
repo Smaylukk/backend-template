@@ -8,7 +8,7 @@ let app: FastifyInstance
 let api: supertest.SuperTest<supertest.Test>
 const todoData = new TodoDTO({
   title: 'tests todo',
-  userId: 1,
+  complete: false,
 })
 let token: string
 
@@ -74,7 +74,7 @@ describe('Test todo API', () => {
     expect(res.status).toBe(200)
     expect(res.headers['content-type']).toMatch('application/json')
     expect(res.body.title).toBe(todoData.title)
-    expect(res.body.userId).toBe(todoData.userId)
+    expect(res.body.user).toBeDefined()
   })
   test('todo api - GET all', async () => {
     const res = await api.get('/api/todo').auth(token, { type: 'bearer' })
