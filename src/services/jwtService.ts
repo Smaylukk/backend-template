@@ -1,8 +1,9 @@
 import jwt from 'jsonwebtoken'
 import { JWTConfig } from '../config/config'
+import { JwtPayload, JwtTokenPair } from '../interfaces'
 
 class JWTService {
-  generateAccessToken(payload) {
+  generateAccessToken(payload: JwtPayload) {
     const secret = JWTConfig.jwtAccessSecret
 
     return jwt.sign(payload, secret, {
@@ -10,7 +11,7 @@ class JWTService {
     })
   }
 
-  generateRefreshToken(payload) {
+  generateRefreshToken(payload: JwtPayload) {
     const secret = JWTConfig.jwtRefreshSecret
 
     return jwt.sign(payload, secret, {})
@@ -18,15 +19,15 @@ class JWTService {
 
   verifyToken(token: string) {
     const secret = JWTConfig.jwtAccessSecret
-    return jwt.verify(token, secret)
+    return jwt.verify(token, secret) as jwt.JwtPayload
   }
 
   verifyRefreshToken(token: string) {
     const secret = JWTConfig.jwtRefreshSecret
-    return jwt.verify(token, secret)
+    return jwt.verify(token, secret) as jwt.JwtPayload
   }
 
-  createTokensPair(payload) {
+  createTokensPair(payload: JwtPayload): JwtTokenPair {
     return {
       accessToken: this.generateAccessToken(payload),
       refreshToken: this.generateRefreshToken(payload),

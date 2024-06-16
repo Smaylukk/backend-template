@@ -1,4 +1,4 @@
-# ts-hapi-seq-pg-auth
+# ts-hapi-mongoose-mongo-auth
 
 Додаток по-замовчуванню має:
 
@@ -22,8 +22,8 @@
 
 - ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
 - ![Hapi.js](https://img.shields.io/badge/hapi.js-%23404d59.svg?style=for-the-badge&logo=hapi&logoColor=white)
-- ![Sequelize](https://img.shields.io/badge/Sequelize-52B0E7?style=for-the-badge&logo=Sequelize&logoColor=white)
-- ![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
+- ![Mongoose](https://img.shields.io/badge/Mongoose-254845?style=for-the-badge&logo=mongoose&logoColor=white)
+- ![Mongodb](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white)
 - ![Redis](https://img.shields.io/badge/redis-%23DD0031.svg?style=for-the-badge&logo=redis&logoColor=white)
 - ![Auth](https://img.shields.io/badge/Auth-%23DD5431.svg?style=for-the-badge&logo=user&logoColor=white)
 

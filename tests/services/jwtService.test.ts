@@ -1,13 +1,14 @@
 import * as dotenv from 'dotenv'
 import JwtService from '../../src/services/jwtService'
+import { JwtPayload } from '../../src/interfaces'
 
 const envFile = `.env.test`
 dotenv.config({ path: envFile })
 
-let userData = {
+let userData: JwtPayload = {
+  id: 'id',
   email: 'user@tests.org',
   name: 'test user',
-  password: 'test',
 }
 
 describe('Test JWT service', () => {

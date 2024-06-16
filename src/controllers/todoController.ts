@@ -14,7 +14,9 @@ class TodoController {
     } catch (error) {
       console.log(error)
       const boomError = boom.badRequest(error.message)
-      return h.response(boomError.output.payload).code(boomError.output.statusCode)
+      return h
+        .response(boomError.output.payload)
+        .code(boomError.output.statusCode)
     }
   }
 
@@ -22,20 +24,15 @@ class TodoController {
     try {
       const user = req.auth.credentials as IUserDTO
       const { id } = req.params
-      let numId = 0
-      try {
-        numId = parseInt(id, 10)
-      } catch (e) {
-        const boomError = boom.badRequest('Param id must be number')
-        return h.response(boomError.output.payload).code(boomError.output.statusCode)
-      }
-      const todo = await TodoService.getOneTodo(user.id, numId)
+      const todo = await TodoService.getOneTodo(user.id, id)
 
       return h.response(todo).code(200)
     } catch (error) {
       console.log(error)
       const boomError = boom.badRequest(error.message)
-      return h.response(boomError.output.payload).code(boomError.output.statusCode)
+      return h
+        .response(boomError.output.payload)
+        .code(boomError.output.statusCode)
     }
   }
 
@@ -48,7 +45,9 @@ class TodoController {
     } catch (error) {
       console.log(error)
       const boomError = boom.badRequest(error.message)
-      return h.response(boomError.output.payload).code(boomError.output.statusCode)
+      return h
+        .response(boomError.output.payload)
+        .code(boomError.output.statusCode)
     }
   }
 
@@ -56,20 +55,15 @@ class TodoController {
     try {
       const user = req.auth.credentials as IUserDTO
       const { id } = req.params
-      let numId = 0
-      try {
-        numId = parseInt(id, 10)
-      } catch (e) {
-        const boomError = boom.badRequest('Param id must be number')
-        return h.response(boomError.output.payload).code(boomError.output.statusCode)
-      }
       const { payload } = req
-      const todo = await TodoService.updateTodo(user.id, numId, payload)
+      const todo = await TodoService.updateTodo(user.id, id, payload)
       return h.response(todo).code(200)
     } catch (error) {
       console.log(error)
       const boomError = boom.badRequest(error.message)
-      return h.response(boomError.output.payload).code(boomError.output.statusCode)
+      return h
+        .response(boomError.output.payload)
+        .code(boomError.output.statusCode)
     }
   }
 
@@ -77,20 +71,15 @@ class TodoController {
     try {
       const user = req.auth.credentials as IUserDTO
       const { id } = req.params
-      let numId = 0
-      try {
-        numId = parseInt(id, 10)
-      } catch (e) {
-        const boomError = boom.badRequest('Param id must be number')
-        return h.response(boomError.output.payload).code(boomError.output.statusCode)
-      }
-      const todo = await TodoService.deleteTodo(user.id, numId)
+      const todo = await TodoService.deleteTodo(user.id, id)
 
       return h.response(todo.toString()).code(200)
     } catch (error) {
       console.log(error)
       const boomError = boom.badRequest(error.message)
-      return h.response(boomError.output.payload).code(boomError.output.statusCode)
+      return h
+        .response(boomError.output.payload)
+        .code(boomError.output.statusCode)
     }
   }
 }
