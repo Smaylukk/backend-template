@@ -49,7 +49,7 @@ By default, the application implements:
       - [![Mariadb](https://img.shields.io/badge/MariaDB-003545?style=for-the-badge&logo=mariadb&logoColor=white)](https://github.com/Smaylukk/backend-template/tree/fastify/ts-fastify-seq-maria-auth)
     - ![Mongoose](https://img.shields.io/badge/Mongoose-6244E7?style=for-the-badge&logo=Sequelize&logoColor=white)
       - [![Mongodb](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white)](https://github.com/Smaylukk/backend-template/tree/fastify/ts-fastify-mongoose-mongo-auth)
-  - ![Hapi.js](https://img.shields.io/badge/hapi-123?style=for-the-badge&logo=hapi&logoColor=white)
+  - ![Hapi.js](https://img.shields.io/badge/hapi-122387?style=for-the-badge&logo=hapi&logoColor=white)
     - ![Sequelize](https://img.shields.io/badge/Sequelize-52B0E7?style=for-the-badge&logo=Sequelize&logoColor=white)
       - [![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)](https://github.com/Smaylukk/backend-template/tree/hapi/ts-hapi-seq-pg-auth)
       - [![MySQL](https://img.shields.io/badge/MySQL-ffC841?style=for-the-badge&logo=mysql&logoColor=black)](https://github.com/Smaylukk/backend-template/tree/hapi/ts-hapi-seq-mysql-auth)
