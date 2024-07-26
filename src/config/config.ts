@@ -8,16 +8,12 @@ dotenv.config({ path: envFile })
 export const ServerConfig: IServerConfig = {
   isTest,
   port: +process.env.PORT || 5005,
+  host: process.env.HOST || '',
   nodeEnv: process.env.NODE_ENV,
 }
 
 export const DatabaseConfig: IDatabaseConfig = {
-  dbName: process.env.DB_NAME,
-  dbUser: process.env.DB_USER,
-  dbPassword: process.env.DB_PASSWORD,
-  dbHost: process.env.DB_HOST,
-  dbPort: +process.env.DB_PORT,
-  dbSSL: process.env.DB_SSL,
+  mongoURL: process.env.MONGO_URL,
 }
 
 export const JWTConfig: IJWTConfig = {

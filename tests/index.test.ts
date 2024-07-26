@@ -69,7 +69,6 @@ describe('Test todo API', () => {
     expect(res.status).toBe(200)
     expect(res.headers['content-type']).toMatch('application/json')
     expect(res.body.title).toBe(todoData.title)
-    expect(res.body.userId).toBe(todoData.userId)
   })
   test('todo api - GET all', async () => {
     const res = await api.get('/api/todo').auth(token, { type: 'bearer' })

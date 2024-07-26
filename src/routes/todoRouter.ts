@@ -7,7 +7,7 @@ const schema = Joi.object({
   title: Joi.string()
     .required()
     .messages({ 'string.empty': 'Заголовок обовязковий', 'any.required': 'Заголовок обовязковий' }),
-  userId: Joi.number()
+  userId: Joi.string()
     .required()
     .messages({ 'number.empty': 'userId обовязковий', 'any.required': 'userId обовязковий' }),
 }).unknown(true)

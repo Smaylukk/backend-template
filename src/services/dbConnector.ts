@@ -1,18 +1,15 @@
-import sequelize from './db'
+import * as mongoose from 'mongoose'
 import { StartService } from './startService'
+import { DatabaseConfig } from '../config/config'
 
 const connectDb = async (isTest: boolean) => {
-  await sequelize.authenticate()
-  sequelize
-    .sync({ force: false, logging: !isTest && console.log })
-    .then(async () => {
-      if (!isTest) {
-        await new StartService().initValue()
-      }
-    })
-    .catch((reason) => {
-      throw reason
-    })
+  await mongoose.connect(DatabaseConfig.mongoURL)
+  if (!isTest) {
+    await new StartService().initValue()
+  }
+}
+const disconnectDb = async () => {
+  await mongoose.disconnect()
 }
 
-export { connectDb }
+export { connectDb, disconnectDb }
